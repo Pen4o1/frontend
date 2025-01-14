@@ -1,0 +1,38 @@
+.login-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.form-box {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    max-width: 400px;
+    width: 100%;
+}
+
+.ion-item {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.login-button, .register-button {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.forgot-password-link{
+    text-align: center;
+    display: block;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.social-login-buttons .social-button {
+    margin-top: 10px;
+    width: 100%;
+}

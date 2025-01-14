@@ -1,0 +1,11 @@
+{
+  "name": "ionicAPP",
+  "integrations": {
+    "capacitor": {}
+  },
+  "devServer": {
+    "port": 8100
+  },
+  "type": "react-vite",
+  "id": "a215f6a3"
+}
