@@ -19,6 +19,7 @@
     "@capacitor/ios": "6.1.2",
     "@capacitor/keyboard": "6.0.2",
     "@capacitor/status-bar": "6.0.1",
+    "@ionic-native/barcode-scanner": "^5.36.0",
     "@ionic/react": "^8.3.3",
     "@ionic/react-router": "^8.3.3",
     "@react-oauth/google": "^0.12.1",

@@ -1,21 +1,17 @@
 import React, { createContext, useState, useEffect } from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import {
   IonApp,
   IonRouterOutlet,
-  setupIonicReact,
   IonTabBar,
   IonTabButton,
   IonButton,
   IonIcon,
   IonLabel,
   IonTabs,
-  IonContent,
-  IonToggle,
 } from '@ionic/react'
 import { home, add, person } from 'ionicons/icons'
 import { IonReactRouter } from '@ionic/react-router'
-import type { ToggleCustomEvent } from '@ionic/react';
 import Home from './pages/Home-page/Home-page'
 import Login from './pages/Login/Login'
 import Register from './pages/Register/Register'
@@ -23,6 +19,7 @@ import ForgotPassword from './pages/Forgotten-password/Forgot-password'
 import MyProfile from './pages/My-profile/My-profile'
 import AddFood from './pages/Add-food/Add-food'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { setupIonicReact } from '@ionic/react';
 import './components/styles/app-style.css'
 import NutritionInfo from './components/nutritionScreen'
 import CompleteRegistration from './pages/Complete-registration/Complete-registaration'
@@ -98,8 +95,9 @@ const App: React.FC = () => {
           <IonReactRouter>
             <IonTabs>
               <IonRouterOutlet>
+                {/* Redirect to Home page if logged in */}
                 <Route exact path="/">
-                  <Home />
+                  {isLoggedIn ? <Redirect to="/home" /> : <Login />}
                 </Route>
                 <Route exact path="/home">
                   <Home />
@@ -111,10 +109,10 @@ const App: React.FC = () => {
                   <MyProfile />
                 </Route>
                 <Route exact path="/login">
-                  <Login />
+                  {isLoggedIn ? <Redirect to="/home" /> : <Login />}
                 </Route>
                 <Route exact path="/register">
-                  <Register />
+                  {isLoggedIn ? <Redirect to="/home" /> : <Register />}
                 </Route>
                 <Route exact path="/forgot-password">
                   <ForgotPassword />
@@ -169,7 +167,7 @@ const App: React.FC = () => {
                     tab="Get Meal Plan"
                     onClick={() => setShowGetMealPlan(true)}
                   >
-                    <IonButton>Set Meal Plan</IonButton>
+                    <IonButton>Get Meal Plan</IonButton>
                   </IonTabButton>
                 </IonTabBar>
               )}
@@ -203,4 +201,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

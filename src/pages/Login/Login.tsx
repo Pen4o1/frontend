@@ -114,7 +114,7 @@ const Login: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Login</IonTitle>
+          <IonTitle>MacroGenie</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="login-content">
@@ -122,6 +122,9 @@ const Login: React.FC = () => {
           <IonRow className="ion-justify-content-center ion-align-items-center">
             <IonCol size="12" sizeMd="6" sizeLg="4">
               <div className="form-box">
+                <IonItem>
+                  <h2>Login</h2>
+                </IonItem>
                 <IonItem>
                   <IonInput
                     type="email"
@@ -196,3 +199,6 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
+
+

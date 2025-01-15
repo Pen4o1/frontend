@@ -18,12 +18,13 @@ import {
   IonSelectOption,
   IonModal,
 } from '@ionic/react';
-import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '../../components/styles/add-food-style.css';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 const AddFood: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
@@ -32,41 +33,43 @@ const AddFood: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-  const history = useHistory()
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [barcode, setBarcode] = useState<string | null>(null); // Store the barcode
+  const history = useHistory();
 
-   
-  
-    const validateToken = async () => {
-      try {
-        const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/validate/token', {
-          method: 'POST',
-          credentials: 'include',
-        })
-  
-        if (response.ok) {
-          const data = await response.json()
-          if (data.valid) {
-            setIsAuthenticated(true)
-          } else {
-            history.push('/login')
-          }
+  // Validate the token (authentication check)
+  const validateToken = async () => {
+    try {
+      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/validate/token', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.valid) {
+          setIsAuthenticated(true);
         } else {
-          history.push('/login')
+          history.push('/login');
         }
-      } catch (error) {
-        console.error('Token validation failed:', error)
-        history.push('/login')
+      } else {
+        history.push('/login');
       }
+    } catch (error) {
+      console.error('Token validation failed:', error);
+      history.push('/login');
     }
-  
-    useEffect(() => {
-      validateToken()
-    }, [history])
-  
-    if (!isAuthenticated) {
-      return null
-    }
+  };
+
+  useEffect(() => {
+    validateToken();
+  }, [history]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  // Fetch items for the search query
   const fetchItems = async () => {
     if (!inputValue.trim()) {
       setErrorMessage('Please enter a valid input.');
@@ -78,9 +81,7 @@ const AddFood: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://grown-evidently-chimp.ngrok-free.app/api/foods/search?query=${encodeURIComponent(
-          inputValue
-        )}`,
+        `https://grown-evidently-chimp.ngrok-free.app/api/foods/search?query=${encodeURIComponent(inputValue)}`,
         {
           method: 'GET',
         }
@@ -103,8 +104,7 @@ const AddFood: React.FC = () => {
           carbohydrate: parseFloat(food.servings?.serving[0]?.carbohydrate) || 0,
           protein: parseFloat(food.servings?.serving[0]?.protein) || 0,
           fat: parseFloat(food.servings?.serving[0]?.fat) || 0,
-          servingDescription:
-            food.servings?.serving[0]?.serving_description || 'Unknown',
+          servingDescription: food.servings?.serving[0]?.serving_description || 'Unknown',
           servingMultiplier: 1, // Default serving size multiplier
         }));
         setFetchedItems(formattedItems);
@@ -118,6 +118,7 @@ const AddFood: React.FC = () => {
     }
   };
 
+  // Handle serving size change
   const handleServingChange = (itemId: string, multiplier: number) => {
     setFetchedItems((prevItems) =>
       prevItems.map((item) =>
@@ -126,6 +127,7 @@ const AddFood: React.FC = () => {
     );
   };
 
+  // Toggle selection of food items
   const toggleSelection = (item: any) => {
     const isSelected = selectedItems.some((selected) => selected.id === item.id);
     if (isSelected) {
@@ -137,6 +139,7 @@ const AddFood: React.FC = () => {
     }
   };
 
+  // Add selected items to daily macros
   const addItemsToDailyCalories = async () => {
     if (selectedItems.length === 0) {
       setErrorMessage('No items selected.');
@@ -177,6 +180,33 @@ const AddFood: React.FC = () => {
     }
   };
 
+  // Barcode scanning function
+  const scanBarcode = async () => {
+    try {
+      const data = await BarcodeScanner.scan();
+      if (data.cancelled) {
+        console.log('Barcode scan was cancelled');
+      } else {
+        setBarcode(data.text);  // Save the scanned barcode to state
+        console.log('Scanned Barcode:', data.text);
+
+        // Optionally, send barcode data to the backend to fetch information
+        const response = await fetch(
+          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode/${data.text}`,
+          { method: 'GET' }
+        );
+
+        if (response.ok) {
+          const item = await response.json();
+          console.log('Fetched item from barcode:', item);
+          // Handle item data as needed (add to selected items, etc.)
+        }
+      }
+    } catch (error) {
+      console.error('Error scanning barcode:', error);
+    }
+  };
+
   return (
     <IonPage>
       <IonContent>
@@ -208,9 +238,14 @@ const AddFood: React.FC = () => {
                 </SwiperSlide>
 
                 <SwiperSlide>
-                  <IonButton expand="block" color="primary">
-                    Scan Barcode (Coming Soon)
+                  <IonButton
+                    expand="block"
+                    color="primary"
+                    onClick={scanBarcode}
+                  >
+                    Scan Barcode
                   </IonButton>
+                  {barcode && <IonText>Scanned Barcode: {barcode}</IonText>}
                 </SwiperSlide>
               </Swiper>
             </IonCol>

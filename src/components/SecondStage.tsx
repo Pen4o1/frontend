@@ -88,7 +88,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Complete Registration</IonTitle>
+          <IonTitle>MacroGenie</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="register-content">
@@ -96,7 +96,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
           <IonRow className="ion-justify-content-center ion-align-items-center">
             <IonCol size="1" className="ion-align-self-center">
               <IonButton onClick={handleBack} fill="clear" disabled={loading}>
-                <IonIcon icon={arrowBackCircle} slot="icon-only" />
+                <IonIcon icon={arrowBackCircle} slot="icon-only" color="primary"/>
               </IonButton>
             </IonCol>
             <IonCol size="12" sizeMd="6" sizeLg="4">
