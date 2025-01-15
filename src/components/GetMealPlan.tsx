@@ -35,7 +35,7 @@ const MealPlanPopup: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
     setLoading(true);
     setError(null); 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/get/meal/plan', {
+      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/get/meal/plan', {
         method: 'GET',
         credentials: 'include',
         headers: {

@@ -18,11 +18,12 @@ const MyProfile: React.FC = () => {
   const [userData, setUserData] = useState({
     first_name: '',
     last_name: '',
-    email: '',
     avatar: '',
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;  // Access the environment variable
+
 
   // Dark theme toggle logic
   const toggleChange = (event: ToggleCustomEvent) => {
@@ -56,7 +57,7 @@ const MyProfile: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/user/profile', {
+        const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/user/profile', {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -73,7 +74,6 @@ const MyProfile: React.FC = () => {
         setUserData({
           first_name: result.first_name,  // Use 'first_name' instead of 'name'
           last_name: result.last_name,
-          email: result.email,
           avatar: result.avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg',
         });
       } catch (error) {
@@ -85,7 +85,7 @@ const MyProfile: React.FC = () => {
   }, []);
 
   // Handle save changes from modal
-  const handleSaveChanges = (updatedData: { first_name: string; last_name: string; email: string }) => {
+  const handleSaveChanges = (updatedData: { first_name: string; last_name: string}) => {
     setUserData({
       ...userData,  // Spread existing user data to retain the avatar
       ...updatedData, // Apply the updated fields (first_name, last_name, email)
@@ -125,7 +125,6 @@ const MyProfile: React.FC = () => {
         </div>
       </IonContent>
 
-      {/* Pass necessary props to EditProfileModal */}
       <EditProfileModal
         isOpen={isModalOpen}
         onDismiss={() => setIsModalOpen(false)} // Close the modal

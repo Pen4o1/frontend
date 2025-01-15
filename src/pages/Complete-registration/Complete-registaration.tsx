@@ -36,7 +36,7 @@ const Profile: React.FC = () => {
       try {
         setLoading(true)
         const response = await fetch(
-          'http://127.0.0.1:8000/api/profile/status',
+          'https://d74c-78-83-77-114.ngrok-free.app/api/profile/status',
           {
             method: 'GET',
             credentials: 'include',

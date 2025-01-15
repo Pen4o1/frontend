@@ -1,10 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react';
 import {
   IonContent,
-  IonHeader,
   IonPage,
-  IonTitle,
-  IonToolbar,
   IonInput,
   IonLoading,
   IonButton,
@@ -14,36 +11,40 @@ import {
   IonRow,
   IonCol,
   IonIcon,
-} from '@ionic/react'
-import '../../components/styles/login-style.css'
-import { UserContext } from '../../App'
-import { useHistory } from 'react-router-dom'
-import { eye, eyeOff } from 'ionicons/icons'
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/react';
+import '../../components/styles/login-style.css';
+import { UserContext } from '../../App';
+import { useHistory } from 'react-router-dom';
+import { eye, eyeOff } from 'ionicons/icons';
+import { getClientId, getPlatform } from '../../utils/platform';
+
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [loading, setLoading] = useState<boolean>(false)
-  const context = useContext(UserContext)
-  const history = useHistory()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const context = useContext(UserContext);
+  const history = useHistory();
 
   if (!context) {
-    throw new Error('UserContext must be used within a UserContext.Provider')
+    throw new Error('UserContext must be used within a UserContext.Provider');
   }
 
-  const { setIsLoggedIn } = context
-  const { setIsCompleated } = context
+  const { setIsLoggedIn, setIsCompleated } = context;
 
   interface LoginResponse {
-    token: string
-    redirect_url: string
+    token: string;
+    redirect_url: string;
   }
 
   const handleLogin = async (): Promise<void> => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/login', {
+      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -53,34 +54,69 @@ const Login: React.FC = () => {
           email,
           password,
         }),
-      })
+      });
 
       if (response.ok) {
-        const data: LoginResponse = await response.json()
-        setIsLoggedIn(true)
-        setIsCompleated(true)
-        setErrorMessage(null)
+        const data: LoginResponse = await response.json();
+        setIsLoggedIn(true);
+        setIsCompleated(true);
+        setErrorMessage(null);
 
         if (data.redirect_url) {
-          console.log('Login successful:', data)
-          history.push(data.redirect_url)
+          console.log('Login successful:', data);
+          history.push(data.redirect_url);
         }
       } else if (response.status === 422) {
-        const errorData = await response.json()
-        setErrorMessage(errorData.message || 'Invalid credentials.')
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || 'Invalid credentials.');
       } else {
-        setErrorMessage('Something went wrong. Please try again later.')
+        setErrorMessage('Something went wrong. Please try again later.');
       }
     } catch (error) {
-      console.error('Login error:', error)
-      setErrorMessage('Network error. Please try again.')
+      console.error('Login error:', error);
+      setErrorMessage('Network error. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+/*
+  const handleGoogleLogin = () => {
+    const platform = getPlatform();
+    const clientId = getClientId(); // Retrieves client ID from environment
+    const redirectUri =
+      platform === 'ios'
+        ? import.meta.env.VITE_IOS_REDIRECT_URI // Using the iOS redirect URI from .env
+        : import.meta.env.VITE_WEB_REDIRECT_URI; // Using the Web redirect URI from .env
+  
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&response_type=code&scope=profile email openid`;
+  
+    window.location.href = googleAuthUrl; // Redirects to Google OAuth page
+  };
+
+  for the button
+  <IonButton
+                    expand="block"
+                    color="medium"
+                    className="social-button"
+                    onClick={handleGoogleLogin}
+                    disabled={loading}
+                  >
+                    Continue with Google
+                  </IonButton>
+
+    i need to fix for the ios
+
+*/
 
   return (
     <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Login</IonTitle>
+        </IonToolbar>
+      </IonHeader>
       <IonContent className="login-content">
         <IonGrid className="ion-justify-content-center ion-align-items-center">
           <IonRow className="ion-justify-content-center ion-align-items-center">
@@ -138,15 +174,7 @@ const Login: React.FC = () => {
                 </IonButton>
 
                 <div className="social-login-buttons">
-                  <IonButton
-                    expand="block"
-                    color="primary"
-                    className="social-button"
-                    disabled={loading}
-                  >
-                    Continue with Facebook
-                  </IonButton>
-                  <IonButton
+                <IonButton
                     href="http://127.0.0.1:8000/api/auth/google"
                     expand="block"
                     color="medium"
@@ -156,6 +184,7 @@ const Login: React.FC = () => {
                     Continue with Google
                   </IonButton>
                 </div>
+
                 <IonLoading isOpen={loading} />
               </div>
             </IonCol>
@@ -163,7 +192,7 @@ const Login: React.FC = () => {
         </IonGrid>
       </IonContent>
     </IonPage>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

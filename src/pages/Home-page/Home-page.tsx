@@ -19,10 +19,11 @@ import ProgressChart from '../../components/progress-chart'
 const Home: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   const history = useHistory()
+  const backendUrl = import.meta.env.VITE_BACKEND_URL; 
 
   const validateToken = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/validate/token', {
+      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/validate/token', {
         method: 'POST',
         credentials: 'include',
       })

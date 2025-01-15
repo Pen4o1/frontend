@@ -23,13 +23,11 @@ interface EditProfileWindowProps {
   userData: {
     first_name: string;
     last_name: string;
-    email: string;
     avatar: string;
   };
   onSave: (updatedData: {
     first_name: string;
     last_name: string;
-    email: string;
     birthdate: string;
     height: string;
     kilos: string;
@@ -40,7 +38,6 @@ interface EditProfileWindowProps {
 const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss, onSave }) => {
   const [firstName, setFirstName] = useState('');
   const [secondName, setSecondName] = useState('');
-  const [email, setEmail] = useState('');
   const [birthdate, setBirthdate] = useState('');
   const [height, setHeight] = useState('');
   const [kilos, setKilos] = useState('');
@@ -52,7 +49,7 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
   const fetchUserProfile = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://127.0.0.1:8000/api/profile/status', {
+      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/profile/status', {
         method: 'GET',
         credentials: 'include',
       });
@@ -64,7 +61,6 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
       const data = await response.json();
       setFirstName(data.profile_data.first_name || '');
       setSecondName(data.profile_data.last_name || '');
-      setEmail(data.profile_data.email || '');
       setBirthdate(data.profile_data.birthdate || '');
       setHeight(data.profile_data.height || '');
       setKilos(data.profile_data.kilos || '');
@@ -83,11 +79,18 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
     }
   }, [isOpen]);
 
-  const isFieldCompleted = (field: string) => completedFields.includes(field);
-
-  const isFieldFilled = (value: string) => value.trim() !== '';
+  const isFieldFilled = (value: string | null | undefined) =>
+    typeof value === 'string' && value.trim() !== '';
 
   const handleSave = async () => {
+    console.log({
+      firstName,
+      secondName,
+      birthdate,
+      height,
+      kilos,
+      gender,
+    });
     if (
       !isFieldFilled(firstName) ||
       !isFieldFilled(secondName) ||
@@ -104,7 +107,6 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
     const updatedData = {
       first_name: firstName,
       last_name: secondName,
-      email,
       birthdate,
       height,
       kilos,
@@ -112,7 +114,7 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/update/profile', {
+      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/update/profile', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -170,14 +172,6 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
                   type="text"
                   value={secondName}
                   onIonChange={(e) => setSecondName(e.detail.value!)}
-                />
-              </IonItem>
-              <IonItem>
-                <IonInput
-                  placeholder="Email"
-                  type="email"
-                  value={email}
-                  onIonChange={(e) => setEmail(e.detail.value!)}
                 />
               </IonItem>
               <IonItem>

@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-
+import React, { useState } from 'react' 
 const FoodSearch: React.FC = () => {
   const [query, setQuery] = useState<string>('')
   const [results, setResults] = useState<any[]>([])
@@ -12,7 +11,7 @@ const FoodSearch: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/foods/search?query=${encodeURIComponent(
+        `http://192.168.100.49:8000/api/foods/search?query=${encodeURIComponent(
           query
         )}`
       )
