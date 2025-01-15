@@ -44,7 +44,7 @@ const Login: React.FC = () => {
   const handleLogin = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/login', {
+      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -175,7 +175,7 @@ const Login: React.FC = () => {
 
                 <div className="social-login-buttons">
                 <IonButton
-                    href="http://127.0.0.1:8000/api/auth/google"
+                    href="https://grown-evidently-chimp.ngrok-free.app/api/auth/google"
                     expand="block"
                     color="medium"
                     className="social-button"

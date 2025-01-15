@@ -55,7 +55,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
     setLoading(true)
 
     try {
-      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/register', {
+      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/register', {
         method: 'POST',
         credentials: 'include',
         headers: {

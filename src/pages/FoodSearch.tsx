@@ -11,7 +11,7 @@ const FoodSearch: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://192.168.100.49:8000/api/foods/search?query=${encodeURIComponent(
+        `https://grown-evidently-chimp.ngrok-free.app/api/foods/search?query=${encodeURIComponent(
           query
         )}`
       )

@@ -49,7 +49,7 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
   const fetchUserProfile = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/profile/status', {
+      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/profile/status', {
         method: 'GET',
         credentials: 'include',
       });
@@ -114,7 +114,7 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
     };
 
     try {
-      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/update/profile', {
+      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/update/profile', {
         method: 'POST',
         credentials: 'include',
         headers: {

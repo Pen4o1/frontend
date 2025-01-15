@@ -23,7 +23,7 @@ const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   const handleSave = async () => {
     const payload = { goal, activityLevel }
     try {
-      const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/save/goal', {
+      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/save/goal', {
         method: 'POST',
         credentials: 'include',
         headers: {

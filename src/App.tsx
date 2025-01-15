@@ -66,7 +66,7 @@ const App: React.FC = () => {
     const validateToken = async () => {
       try {
         const response = await fetch(
-          'https://d74c-78-83-77-114.ngrok-free.app/api/validate/token',
+          'https://grown-evidently-chimp.ngrok-free.app/api/validate/token',
           {
             method: 'POST',
             credentials: 'include',

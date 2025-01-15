@@ -16,7 +16,7 @@ const ProgressChart: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          'https://d74c-78-83-77-114.ngrok-free.app/api/get/daily/macros',
+          'https://grown-evidently-chimp.ngrok-free.app/api/get/daily/macros',
           {
             method: 'GET',
             credentials: 'include',

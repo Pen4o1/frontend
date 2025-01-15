@@ -39,7 +39,7 @@ const AddFood: React.FC = () => {
   
     const validateToken = async () => {
       try {
-        const response = await fetch('https://d74c-78-83-77-114.ngrok-free.app/api/validate/token', {
+        const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/validate/token', {
           method: 'POST',
           credentials: 'include',
         })
@@ -78,7 +78,7 @@ const AddFood: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://d74c-78-83-77-114.ngrok-free.app/api/foods/search?query=${encodeURIComponent(
+        `https://grown-evidently-chimp.ngrok-free.app/api/foods/search?query=${encodeURIComponent(
           inputValue
         )}`,
         {
@@ -152,7 +152,7 @@ const AddFood: React.FC = () => {
       }));
 
       const response = await fetch(
-        'https://d74c-78-83-77-114.ngrok-free.app/api/save/daily/macros',
+        'https://grown-evidently-chimp.ngrok-free.app/api/save/daily/macros',
         {
           method: 'POST',
           credentials: 'include',

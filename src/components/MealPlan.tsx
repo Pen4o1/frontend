@@ -53,7 +53,7 @@ const SetMealPlan: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
     try {
       const payload = { meals_per_day: mealsPerDay };
       const response = await fetch(
-        'https://d74c-78-83-77-114.ngrok-free.app/api/generate/meal/plan',
+        'https://grown-evidently-chimp.ngrok-free.app/api/generate/meal/plan',
         {
           method: 'POST',
           credentials: 'include',
