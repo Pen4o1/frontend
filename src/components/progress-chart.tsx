@@ -98,7 +98,16 @@ const ProgressChart: React.FC = () => {
             dominantBaseline="middle"
             className="progress-label" 
           >
-            {Math.round(progress)}%
+            {Math.round(progress)}% <br/>
+          </text>
+          <text
+            x="50%"
+            y="60%" 
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className="calories-label"
+          >
+            {dailyCalories} / {targetCalories}
           </text>
           <text>
           </text>

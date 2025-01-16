@@ -18,7 +18,6 @@ import {
   IonSelectOption,
   IonModal,
 } from '@ionic/react';
-import { useHistory } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -33,52 +32,7 @@ const AddFood: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [barcode, setBarcode] = useState<string | null>(null);
-  const history = useHistory();
-
-  // Validate the token (authentication check)
-  const validateToken = async () => {
-    try {
-      const token = localStorage.getItem('jwt_token');
-      if (!token) {
-        history.push('/login');
-        return;
-      }
-      const response = await fetch(
-        'https://grown-evidently-chimp.ngrok-free.app/api/validate/token',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.valid) {
-          setIsAuthenticated(true);
-        } else {
-          history.push('/login');
-        }
-      } else {
-        history.push('/login');
-      }
-    } catch (error) {
-      console.error('Token validation failed:', error);
-      history.push('/login');
-    }
-  };
-
-  useEffect(() => {
-    validateToken();
-  }, [history]);
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   // Fetch items for the search query
   const fetchItems = async () => {
@@ -128,7 +82,6 @@ const AddFood: React.FC = () => {
     }
   };
 
-  // Handle serving size change
   const handleServingChange = (itemId: string, multiplier: number) => {
     setFetchedItems((prevItems) =>
       prevItems.map((item) =>
@@ -137,7 +90,6 @@ const AddFood: React.FC = () => {
     );
   };
 
-  // Toggle selection of food items
   const toggleSelection = (item: any) => {
     const isSelected = selectedItems.some((selected) => selected.id === item.id);
     if (isSelected) {
@@ -149,7 +101,6 @@ const AddFood: React.FC = () => {
     }
   };
 
-  // Add selected items to daily macros
   const addItemsToDailyCalories = async () => {
     if (selectedItems.length === 0) {
       setErrorMessage('No items selected.');
@@ -191,7 +142,7 @@ const AddFood: React.FC = () => {
     }
   };
 
-  // Barcode scanning function
+  // For the barcode func
   const scanBarcode = async () => {
     try {
       const data = await BarcodeScanner.scan();

@@ -39,4 +39,12 @@
     margin-top: 10px;
   }
   
+  .progress-label {
+    font-size: 20px;
+    font-weight: bold;
+  }
   
+  .calories-label {
+    font-size: 14px;
+    font-weight: normal;
+  }  

@@ -11,56 +11,11 @@ import { Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/pagination'
-import { useHistory } from 'react-router-dom'
 import '../../components/styles/home.css'
 import MacrosChart from '../../components/MacrosChart'
 import ProgressChart from '../../components/progress-chart'
 
 const Home: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-  const history = useHistory()
-
-  const validateToken = async () => {
-    try {
-      // Retrieve the token from local storage
-      const token = localStorage.getItem('jwt_token');
-      if (!token) {
-        history.push('/login'); // Redirect to login if no token is found
-        return;
-      }
-
-      const response = await fetch(`https://grown-evidently-chimp.ngrok-free.app/api/validate/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.valid) {
-          setIsAuthenticated(true);
-        } else {
-          history.push('/login');
-        }
-      } else {
-        history.push('/login');
-      }
-    } catch (error) {
-      console.error('Token validation failed:', error);
-      history.push('/login');
-    }
-  };
-
-  useEffect(() => {
-    validateToken();
-  }, [history]);
-
-  if (!isAuthenticated) {
-    return null;
-  }
-
   return (
     <IonPage>
       <IonContent className="ion-padding">

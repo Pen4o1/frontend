@@ -10,7 +10,7 @@ import {
 import type { ToggleCustomEvent } from '@ionic/react';
 import { pencil, settings, logOut } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import EditProfileModal from '../../components/EditProfileWindow';  // Import the modal component
+import EditProfileModal from '../../components/EditProfileWindow';
 import '../../components/styles/profile-style.css';
 
 const MyProfile: React.FC = () => {
@@ -51,7 +51,6 @@ const MyProfile: React.FC = () => {
     };
   }, []);
 
-  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -64,7 +63,7 @@ const MyProfile: React.FC = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -75,7 +74,7 @@ const MyProfile: React.FC = () => {
         const result = await response.json();
 
         setUserData({
-          first_name: result.first_name,  // Use 'first_name' instead of 'name'
+          first_name: result.first_name,
           last_name: result.last_name,
           avatar: result.avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg',
         });
@@ -87,13 +86,13 @@ const MyProfile: React.FC = () => {
     fetchUserData();
   }, []);
 
-  // Handle save changes from modal
+  // To handle the chages from the popup
   const handleSaveChanges = (updatedData: { first_name: string; last_name: string}) => {
     setUserData({
-      ...userData,  // Spread existing user data to retain the avatar
-      ...updatedData, // Apply the updated fields (first_name, last_name, email)
+      ...userData,
+      ...updatedData,
     });
-    setIsModalOpen(false); // Close the modal after saving changes
+    setIsModalOpen(false);
   };
 
   return (
@@ -104,7 +103,7 @@ const MyProfile: React.FC = () => {
             <IonAvatar className="profile-avatar">
               <img alt="User's avatar" src={userData.avatar} />
             </IonAvatar>
-            <h2>{userData.first_name}</h2>  {/* Use 'first_name' */}
+            <h2>{userData.first_name}</h2>
             <p>{userData.last_name}</p>
           </div>
 
@@ -130,9 +129,9 @@ const MyProfile: React.FC = () => {
 
       <EditProfileModal
         isOpen={isModalOpen}
-        onDismiss={() => setIsModalOpen(false)} // Close the modal
-        userData={userData} // Pass updated user data (with first_name)
-        onSave={handleSaveChanges} // Pass save changes handler
+        onDismiss={() => setIsModalOpen(false)}
+        userData={userData}
+        onSave={handleSaveChanges}
       />
     </IonPage>
   );

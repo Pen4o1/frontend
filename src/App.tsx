@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import React, { createContext, useState, useEffect } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 import {
   IonApp,
   IonRouterOutlet,
@@ -9,49 +9,50 @@ import {
   IonIcon,
   IonLabel,
   IonTabs,
-} from '@ionic/react'
-import { home, add, person } from 'ionicons/icons'
-import { IonReactRouter } from '@ionic/react-router'
-import Home from './pages/Home-page/Home-page'
-import Login from './pages/Login/Login'
-import Register from './pages/Register/Register'
-import ForgotPassword from './pages/Forgotten-password/Forgot-password'
-import MyProfile from './pages/My-profile/My-profile'
-import AddFood from './pages/Add-food/Add-food'
-import { GoogleOAuthProvider } from '@react-oauth/google'
+  IonLoading,
+} from '@ionic/react';
+import { home, add, person } from 'ionicons/icons';
+import { IonReactRouter } from '@ionic/react-router';
+import Home from './pages/Home-page/Home-page';
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
+import ForgotPassword from './pages/Forgotten-password/Forgot-password';
+import MyProfile from './pages/My-profile/My-profile';
+import AddFood from './pages/Add-food/Add-food';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { setupIonicReact } from '@ionic/react';
-import { useHistory } from 'react-router-dom'
-import './components/styles/app-style.css'
-import NutritionInfo from './components/nutritionScreen'
-import CompleteRegistration from './pages/Complete-registration/Complete-registaration'
-import SetGoalWindow from './components/SetGoalWindow'
-import TestCal from './pages/Add-food/Test-add-foods'
-import SetMealPlan from './components/MealPlan'
-import TestBAckend from './pages/FoodSearch'
-import TEstRecipes from './pages/test_for_recipes'
-import GetMealPlan from './components/GetMealPlan'
+import { useHistory } from 'react-router-dom';
+import './components/styles/app-style.css';
+import NutritionInfo from './components/nutritionScreen';
+import CompleteRegistration from './pages/Complete-registration/Complete-registaration';
+import SetGoalWindow from './components/SetGoalWindow';
+import TestCal from './pages/Add-food/Test-add-foods';
+import SetMealPlan from './components/MealPlan';
+import TestBAckend from './pages/FoodSearch';
+import TEstRecipes from './pages/test_for_recipes';
+import GetMealPlan from './components/GetMealPlan';
 
-import '@ionic/react/css/core.css'
-import '@ionic/react/css/normalize.css'
-import '@ionic/react/css/structure.css'
-import '@ionic/react/css/typography.css'
-import '@ionic/react/css/padding.css'
-import '@ionic/react/css/float-elements.css'
-import '@ionic/react/css/text-alignment.css'
-import '@ionic/react/css/text-transformation.css'
-import '@ionic/react/css/flex-utils.css'
-import '@ionic/react/css/display.css'
-import '@ionic/react/css/palettes/dark.system.css'
-import './theme/variables.css'
+import '@ionic/react/css/core.css';
+import '@ionic/react/css/normalize.css';
+import '@ionic/react/css/structure.css';
+import '@ionic/react/css/typography.css';
+import '@ionic/react/css/padding.css';
+import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/text-alignment.css';
+import '@ionic/react/css/text-transformation.css';
+import '@ionic/react/css/flex-utils.css';
+import '@ionic/react/css/display.css';
+import '@ionic/react/css/palettes/dark.system.css';
+import './theme/variables.css';
 
 export const UserContext = createContext<{
-  isLoggedIn: boolean
-  setIsLoggedIn: (value: boolean) => void
-  isCompleated: boolean
-  setIsCompleated: (value: boolean) => void
-} | null>(null)
+  isLoggedIn: boolean;
+  setIsLoggedIn: (value: boolean) => void;
+  isCompleated: boolean;
+  setIsCompleated: (value: boolean) => void;
+} | null>(null);
 
-setupIonicReact()
+setupIonicReact();
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,30 +60,31 @@ const App: React.FC = () => {
   const [showGoalWindow, setShowGoalWindow] = useState(false);
   const [showMealWindow, setShowMealWindow] = useState(false);
   const [showGetMealPLan, setShowGetMealPlan] = useState(false);
-  const history = useHistory()
-  
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     const validateToken = async () => {
+      setLoading(true); 
       try {
-        // Retrieve the token from local storage
         const token = localStorage.getItem('jwt_token');
         if (!token) {
-          history.push('/login'); // Redirect to login if no token is found
+          history.push('/login');
+          setLoading(false);
           return;
         }
-  
+
         const response = await fetch(
           'https://grown-evidently-chimp.ngrok-free.app/api/validate/token',
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+              Authorization: `Bearer ${token}`,
             },
           }
         );
-  
+
         if (response.ok) {
           const data = await response.json();
           setIsLoggedIn(data.valid);
@@ -94,12 +96,13 @@ const App: React.FC = () => {
       } catch (error) {
         console.error('Authentication check failed', error);
         setIsLoggedIn(false);
+      } finally {
+        setLoading(false);
       }
     };
-  
+
     validateToken();
   }, [history]); // Runs only once on mount
-  
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
@@ -110,24 +113,23 @@ const App: React.FC = () => {
           <IonReactRouter>
             <IonTabs>
               <IonRouterOutlet>
-                {/* Redirect to Home page if logged in */}
                 <Route exact path="/">
-                  {isLoggedIn ? <Redirect to="/home" /> : <Login />}
+                  {isLoggedIn ? <Home/> : <Login />}
                 </Route>
                 <Route exact path="/home">
-                  <Home />
+                  {isLoggedIn ? <Home />: <Login/>}
                 </Route>
                 <Route exact path="/add-food">
-                  <AddFood />
+                  {isLoggedIn ? <AddFood />: <Login/>}
                 </Route>
                 <Route exact path="/my-profile">
-                  <MyProfile />
+                  {isLoggedIn ? <MyProfile/>: <Login/> }
                 </Route>
                 <Route exact path="/login">
-                  {isLoggedIn ? <Redirect to="/home" /> : <Login />}
+                  {isLoggedIn ? <Home/> : <Login />}
                 </Route>
                 <Route exact path="/register">
-                  {isLoggedIn ? <Redirect to="/home" /> : <Register />}
+                  {isLoggedIn ? <Home/> : <Register />}
                 </Route>
                 <Route exact path="/forgot-password">
                   <ForgotPassword />
@@ -209,6 +211,9 @@ const App: React.FC = () => {
               onClose={() => setShowMealWindow(false)}
             />
           </IonReactRouter>
+          <IonLoading
+            isOpen={loading}
+          />
         </IonApp>
       </UserContext.Provider>
     </GoogleOAuthProvider>
