@@ -55,13 +55,17 @@ const Login: React.FC = () => {
           password,
         }),
       });
-
+  
       if (response.ok) {
         const data: LoginResponse = await response.json();
+  
+        // Save the token in local storage
+        localStorage.setItem('jwt_token', data.token);
+  
         setIsLoggedIn(true);
         setIsCompleated(true);
         setErrorMessage(null);
-
+  
         if (data.redirect_url) {
           console.log('Login successful:', data);
           history.push(data.redirect_url);
@@ -79,6 +83,7 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+  
 /*
   const handleGoogleLogin = () => {
     const platform = getPlatform();

@@ -6,15 +6,22 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import './styles/home.css'
+import { useHistory } from 'react-router-dom'
 
 const ProgressChart: React.FC = () => {
   const [dailyCalories, setDailyCalories] = useState<number>(0)
   const [targetCalories, setTargetCalories] = useState<number>(0)
   const [warning, setWarning] = useState<string | null>(null)
+  const history = useHistory();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
         const response = await fetch(
           'https://grown-evidently-chimp.ngrok-free.app/api/get/daily/macros',
           {
@@ -22,6 +29,7 @@ const ProgressChart: React.FC = () => {
             credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
             },
           }
         )

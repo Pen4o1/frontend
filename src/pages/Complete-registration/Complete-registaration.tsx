@@ -34,12 +34,20 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
         setLoading(true)
         const response = await fetch(
           'https://grown-evidently-chimp.ngrok-free.app/api/profile/status',
           {
             method: 'GET',
-            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`, 
+            },
           }
         )
 
@@ -88,12 +96,17 @@ const Profile: React.FC = () => {
         firstName,
         gender,
       }
-
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
+    
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/update/profile', {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       })

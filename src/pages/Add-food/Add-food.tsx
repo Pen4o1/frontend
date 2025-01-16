@@ -34,16 +34,27 @@ const AddFood: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [barcode, setBarcode] = useState<string | null>(null); // Store the barcode
+  const [barcode, setBarcode] = useState<string | null>(null);
   const history = useHistory();
 
   // Validate the token (authentication check)
   const validateToken = async () => {
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/validate/token', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
+      const response = await fetch(
+        'https://grown-evidently-chimp.ngrok-free.app/api/validate/token',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -96,7 +107,6 @@ const AddFood: React.FC = () => {
       if (foods.length === 0) {
         setErrorMessage('No items found for your query.');
       } else {
-        // Map the fetched data
         const formattedItems = foods.map((food: any) => ({
           id: food.food_id,
           name: food.food_name,
@@ -105,7 +115,7 @@ const AddFood: React.FC = () => {
           protein: parseFloat(food.servings?.serving[0]?.protein) || 0,
           fat: parseFloat(food.servings?.serving[0]?.fat) || 0,
           servingDescription: food.servings?.serving[0]?.serving_description || 'Unknown',
-          servingMultiplier: 1, // Default serving size multiplier
+          servingMultiplier: 1,
         }));
         setFetchedItems(formattedItems);
         setShowModal(true);
@@ -147,6 +157,7 @@ const AddFood: React.FC = () => {
     }
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const payload = selectedItems.map((item) => ({
         carbohydrate: item.carbohydrate * item.servingMultiplier,
         protein: item.protein * item.servingMultiplier,
@@ -158,9 +169,9 @@ const AddFood: React.FC = () => {
         'https://grown-evidently-chimp.ngrok-free.app/api/save/daily/macros',
         {
           method: 'POST',
-          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         }
@@ -187,19 +198,20 @@ const AddFood: React.FC = () => {
       if (data.cancelled) {
         console.log('Barcode scan was cancelled');
       } else {
-        setBarcode(data.text);  // Save the scanned barcode to state
+        setBarcode(data.text);
         console.log('Scanned Barcode:', data.text);
 
-        // Optionally, send barcode data to the backend to fetch information
+        const token = localStorage.getItem('jwt_token');
         const response = await fetch(
           `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode/${data.text}`,
-          { method: 'GET' }
+          {
+            method: 'GET',
+          }
         );
 
         if (response.ok) {
           const item = await response.json();
           console.log('Fetched item from barcode:', item);
-          // Handle item data as needed (add to selected items, etc.)
         }
       }
     } catch (error) {
@@ -213,12 +225,7 @@ const AddFood: React.FC = () => {
         <IonGrid>
           <IonRow>
             <IonCol size="12">
-              <Swiper
-                spaceBetween={50}
-                slidesPerView={1}
-                loop={true}
-                pagination={{ clickable: true }}
-              >
+              <Swiper spaceBetween={50} slidesPerView={1} loop={true} pagination={{ clickable: true }}>
                 <SwiperSlide>
                   <IonItem>
                     <IonInput
@@ -227,22 +234,13 @@ const AddFood: React.FC = () => {
                       onIonChange={(e) => setInputValue(e.detail.value!)}
                     />
                   </IonItem>
-                  <IonButton
-                    expand="block"
-                    color="primary"
-                    onClick={fetchItems}
-                    disabled={loading}
-                  >
+                  <IonButton expand="block" color="primary" onClick={fetchItems} disabled={loading}>
                     {loading ? 'Fetching...' : 'Find Items'}
                   </IonButton>
                 </SwiperSlide>
 
                 <SwiperSlide>
-                  <IonButton
-                    expand="block"
-                    color="primary"
-                    onClick={scanBarcode}
-                  >
+                  <IonButton expand="block" color="primary" onClick={scanBarcode}>
                     Scan Barcode
                   </IonButton>
                   {barcode && <IonText>Scanned Barcode: {barcode}</IonText>}

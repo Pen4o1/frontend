@@ -16,6 +16,7 @@ import {
   IonIcon
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
+import { useHistory } from 'react-router-dom';
 
 interface EditProfileWindowProps {
   isOpen: boolean;
@@ -45,13 +46,21 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
   const [completedFields, setCompletedFields] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const history = useHistory();
   const fetchUserProfile = async () => {
     try {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
       setLoading(true);
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/profile/status', {
         method: 'GET',
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {

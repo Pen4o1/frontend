@@ -19,37 +19,46 @@ import ProgressChart from '../../components/progress-chart'
 const Home: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   const history = useHistory()
-  const backendUrl = import.meta.env.VITE_BACKEND_URL; 
 
   const validateToken = async () => {
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/validate/token', {
+      // Retrieve the token from local storage
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login'); // Redirect to login if no token is found
+        return;
+      }
+
+      const response = await fetch(`https://grown-evidently-chimp.ngrok-free.app/api/validate/token`, {
         method: 'POST',
-        credentials: 'include',
-      })
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+        },
+      });
 
       if (response.ok) {
-        const data = await response.json()
+        const data = await response.json();
         if (data.valid) {
-          setIsAuthenticated(true)
+          setIsAuthenticated(true);
         } else {
-          history.push('/login')
+          history.push('/login');
         }
       } else {
-        history.push('/login')
+        history.push('/login');
       }
     } catch (error) {
-      console.error('Token validation failed:', error)
-      history.push('/login')
+      console.error('Token validation failed:', error);
+      history.push('/login');
     }
-  }
+  };
 
   useEffect(() => {
-    validateToken()
-  }, [history])
+    validateToken();
+  }, [history]);
 
   if (!isAuthenticated) {
-    return null
+    return null;
   }
 
   return (
@@ -79,7 +88,7 @@ const Home: React.FC = () => {
         </Swiper>
       </IonContent>
     </IonPage>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

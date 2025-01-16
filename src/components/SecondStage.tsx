@@ -50,10 +50,9 @@ const SecondStage: React.FC<SecondStageProps> = ({
     const parsedKilos = parseFloat(formData.kilos)
     const data = { ...formData, kilos: parsedKilos, height: parsedHeight }
     console.log(data)
-
-
+  
     setLoading(true)
-
+  
     try {
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/register', {
         method: 'POST',
@@ -64,16 +63,22 @@ const SecondStage: React.FC<SecondStageProps> = ({
         },
         body: JSON.stringify(data),
       })
-
+  
       const result = await response.json()
-
+  
       if (!response.ok) {
         setMessage(result.message || 'Registration failed')
         return
       }
-
+  
+      // Store token in local storage if provided in response
+      if (result.token) {
+        localStorage.setItem('jwt_token', result.token)
+        console.log('Token saved to local storage')
+      }
+  
       setMessage(result.message || 'Registration complete')
-
+  
       if (result.redirect_url) {
         history.push(result.redirect_url)
       }
@@ -83,6 +88,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
       setLoading(false)
     }
   }
+  
 
   return (
     <IonPage>
@@ -96,7 +102,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
           <IonRow className="ion-justify-content-center ion-align-items-center">
             <IonCol size="1" className="ion-align-self-center">
               <IonButton onClick={handleBack} fill="clear" disabled={loading}>
-                <IonIcon icon={arrowBackCircle} slot="icon-only" color="primary"/>
+                <IonIcon icon={arrowBackCircle} slot="icon-only" color="black"/>
               </IonButton>
             </IonCol>
             <IonCol size="12" sizeMd="6" sizeLg="4">

@@ -13,6 +13,7 @@ import {
   IonItem,
   IonLabel,
 } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 
 interface MealPlanItem {
   recipe_name: string;
@@ -30,16 +31,21 @@ const MealPlanPopup: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   const [mealPlan, setMealPlan] = useState<MealPlanItem[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const history = useHistory();
   const fetchMealPlan = async () => {
     setLoading(true);
     setError(null); 
     try {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/get/meal/plan', {
         method: 'GET',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
       });
 

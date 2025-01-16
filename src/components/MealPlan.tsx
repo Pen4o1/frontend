@@ -15,6 +15,7 @@ import {
   IonAccordion,
   IonAccordionGroup,
 } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 
 type Ingredient = { ingredient: string[] };
 type Nutrition = { calories: string };
@@ -45,6 +46,7 @@ const SetMealPlan: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   const [mealPlan, setMealPlan] = useState<MealPlanResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const history = useHistory();
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -52,13 +54,18 @@ const SetMealPlan: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
 
     try {
       const payload = { meals_per_day: mealsPerDay };
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
       const response = await fetch(
         'https://grown-evidently-chimp.ngrok-free.app/api/generate/meal/plan',
         {
           method: 'POST',
-          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         }

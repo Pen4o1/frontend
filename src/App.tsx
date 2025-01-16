@@ -20,6 +20,7 @@ import MyProfile from './pages/My-profile/My-profile'
 import AddFood from './pages/Add-food/Add-food'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { setupIonicReact } from '@ionic/react';
+import { useHistory } from 'react-router-dom'
 import './components/styles/app-style.css'
 import NutritionInfo from './components/nutritionScreen'
 import CompleteRegistration from './pages/Complete-registration/Complete-registaration'
@@ -58,17 +59,30 @@ const App: React.FC = () => {
   const [showGoalWindow, setShowGoalWindow] = useState(false);
   const [showMealWindow, setShowMealWindow] = useState(false);
   const [showGetMealPLan, setShowGetMealPlan] = useState(false);
+  const history = useHistory()
+  
 
   useEffect(() => {
     const validateToken = async () => {
       try {
+        // Retrieve the token from local storage
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+          history.push('/login'); // Redirect to login if no token is found
+          return;
+        }
+  
         const response = await fetch(
           'https://grown-evidently-chimp.ngrok-free.app/api/validate/token',
           {
             method: 'POST',
-            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+            },
           }
         );
+  
         if (response.ok) {
           const data = await response.json();
           setIsLoggedIn(data.valid);
@@ -82,9 +96,10 @@ const App: React.FC = () => {
         setIsLoggedIn(false);
       }
     };
-
+  
     validateToken();
-  }, []); // Runs only once on mount
+  }, [history]); // Runs only once on mount
+  
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>

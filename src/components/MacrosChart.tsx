@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import './styles/home.css';
+import { useHistory } from 'react-router-dom';
 
 const COLORS = ['#FFBB28', '#0088FE', '#00C49F'];
 
@@ -13,15 +14,22 @@ const MacrosChart: React.FC = () => {
 
   const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
+  const history = useHistory();
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
         const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/get/daily/macros', {
           method: 'GET',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
         });
 

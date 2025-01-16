@@ -9,7 +9,7 @@ import {
 } from '@ionic/react';
 import type { ToggleCustomEvent } from '@ionic/react';
 import { pencil, settings, logOut } from 'ionicons/icons';
-
+import { useHistory } from 'react-router-dom';
 import EditProfileModal from '../../components/EditProfileWindow';  // Import the modal component
 import '../../components/styles/profile-style.css';
 
@@ -22,9 +22,7 @@ const MyProfile: React.FC = () => {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;  // Access the environment variable
-
-
+  const history = useHistory();
   // Dark theme toggle logic
   const toggleChange = (event: ToggleCustomEvent) => {
     toggleDarkTheme(event.detail.checked);
@@ -57,11 +55,16 @@ const MyProfile: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
         const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/user/profile', {
           method: 'GET',
-          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
           },
         });
 

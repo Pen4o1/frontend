@@ -12,6 +12,7 @@ import {
   IonSelectOption,
   IonFooter,
 } from '@ionic/react'
+import { useHistory } from 'react-router-dom';
 
 const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   isOpen,
@@ -19,15 +20,20 @@ const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
 }) => {
   const [activityLevel, setActivityLevel] = useState('')
   const [goal, setGoal] = useState('')
-
+  const history = useHistory();
   const handleSave = async () => {
+    const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
     const payload = { goal, activityLevel }
     try {
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/save/goal', {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       })
