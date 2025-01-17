@@ -44,6 +44,7 @@ const TestCal: React.FC = () => {
       }
 
       const data = await response.json()
+      console.log(data)
       setErrorMessage(null)
       console.log('Profile updated:', data)
       if (data.redirect_url) {
