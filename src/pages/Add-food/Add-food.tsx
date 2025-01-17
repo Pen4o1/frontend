@@ -33,6 +33,8 @@ const AddFood: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [barcode, setBarcode] = useState<string | null>(null);
+  const [foodDetails, setFoodDetails] = useState<any | null>(null);
+  const [showBarcodeModal, setShowBarcodeModal] = useState(false);
 
   // Fetch items for the search query
   const fetchItems = async () => {
@@ -83,14 +85,12 @@ const AddFood: React.FC = () => {
   };
 
   const handleServingChange = (itemId: string, multiplier: number) => {
-    // Update fetchedItems
     setFetchedItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId ? { ...item, servingMultiplier: multiplier } : item
       )
     );
 
-    // Update selectedItems if the item is already selected
     setSelectedItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId ? { ...item, servingMultiplier: multiplier } : item
@@ -110,20 +110,9 @@ const AddFood: React.FC = () => {
     }
   };
 
-  const addItemsToDailyCalories = async () => {
-    if (selectedItems.length === 0) {
-      setErrorMessage('No items selected.');
-      return;
-    }
-
+  const saveFoodToDailyCalories = async (payload: any) => {
     try {
       const token = localStorage.getItem('jwt_token');
-      const payload = selectedItems.map((item) => ({
-        carbohydrate: item.carbohydrate * item.servingMultiplier,
-        protein: item.protein * item.servingMultiplier,
-        fat: item.fat * item.servingMultiplier,
-        consumed_cal: item.calories * item.servingMultiplier,
-      }));
 
       const response = await fetch(
         'https://grown-evidently-chimp.ngrok-free.app/api/save/daily/macros',
@@ -138,20 +127,51 @@ const AddFood: React.FC = () => {
       );
 
       if (!response.ok) {
-        throw new Error('Failed to save items.');
+        throw new Error('Failed to save food.');
       }
 
-      const data = await response.json();
-      console.log('Successfully added items:', data);
+      console.log('Food saved successfully.');
       setSelectedItems([]);
       setShowModal(false);
+      setFoodDetails(null);
     } catch (error) {
-      console.error('Error adding items:', error);
-      setErrorMessage('Error saving items. Please try again.');
+      console.error('Error saving food:', error);
+      setErrorMessage('Error saving food. Please try again.');
     }
   };
 
-  // For the barcode func
+  const handleSaveSelectedItems = () => {
+    if (selectedItems.length === 0) {
+      setErrorMessage('No items selected.');
+      return;
+    }
+
+    const payload = selectedItems.map((item) => ({
+      carbohydrate: item.carbohydrate * item.servingMultiplier,
+      protein: item.protein * item.servingMultiplier,
+      fat: item.fat * item.servingMultiplier,
+      consumed_cal: item.calories * item.servingMultiplier,
+    }));
+
+    saveFoodToDailyCalories(payload);
+  };
+
+  const handleSaveBarcodeFood = () => {
+    if (!foodDetails) return;
+
+    const payload = [
+      {
+        food_id: foodDetails.food_id,
+        consumed_cal: parseFloat(foodDetails.servings.serving[0].calories),
+        carbohydrate: parseFloat(foodDetails.servings.serving[0].carbohydrate),
+        protein: parseFloat(foodDetails.servings.serving[0].protein),
+        fat: parseFloat(foodDetails.servings.serving[0].fat),
+      },
+    ];
+
+    saveFoodToDailyCalories(payload);
+  };
+
   const scanBarcode = async () => {
     try {
       const data = await BarcodeScanner.scan();
@@ -162,17 +182,17 @@ const AddFood: React.FC = () => {
         console.log('Scanned Barcode:', data.text);
 
         const response = await fetch(
-          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode`,
+          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode?query=${data.text}`,
           {
             method: 'POST',
-            body: JSON.stringify(data),
           }
-          
         );
 
         if (response.ok) {
           const item = await response.json();
           console.log('Fetched item from barcode:', item);
+          setFoodDetails(item.food);
+          setShowBarcodeModal(true);
         }
       }
     } catch (error) {
@@ -217,6 +237,7 @@ const AddFood: React.FC = () => {
           </IonText>
         )}
 
+        {/* Manual Selection Modal */}
         <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
           <IonHeader>
             <IonToolbar>
@@ -224,61 +245,75 @@ const AddFood: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <IonContent>
-            <div className="item-select">
-              {fetchedItems.length > 0 ? (
-                <IonGrid>
-                  {fetchedItems.map((item, index) => (
-                    <IonRow key={index}>
-                      <IonCol>
-                        <IonItem>
-                          <IonLabel>
-                            <h2>{item.name}</h2>
-                            <p>
-                              <strong>Calories:</strong> {item.calories}
-                            </p>
-                            <p>
-                              <strong>Serving:</strong> {item.servingDescription}
-                            </p>
-                          </IonLabel>
-                          <IonSelect
-                            placeholder="Servings"
-                            onIonChange={(e) =>
-                              handleServingChange(item.id, e.detail.value)
-                            }
-                          >
-                            <IonSelectOption value={0.25}>1/4</IonSelectOption>
-                            <IonSelectOption value={0.5}>1/2</IonSelectOption>
-                            <IonSelectOption value={1}>1</IonSelectOption>
-                            <IonSelectOption value={2}>2</IonSelectOption>
-                            <IonSelectOption value={3}>3</IonSelectOption>
-                          </IonSelect>
-                          <IonCheckbox
-                            slot="start"
-                            checked={selectedItems.some(
-                              (selected) => selected.id === item.id
-                            )}
-                            onIonChange={() => toggleSelection(item)}
-                          />
-                        </IonItem>
-                      </IonCol>
-                    </IonRow>
-                  ))}
-                </IonGrid>
-              ) : (
-                <IonText color="danger">
-                  <p>No items found. Please try another input.</p>
-                </IonText>
-              )}
-            </div>
+            <IonGrid>
+              {fetchedItems.map((item) => (
+                <IonRow key={item.id}>
+                  <IonCol>
+                    <IonItem>
+                      <IonLabel>
+                        <h2>{item.name}</h2>
+                        <p>
+                          <strong>Calories:</strong> {item.calories}
+                        </p>
+                        <p>
+                          <strong>Serving:</strong> {item.servingDescription}
+                        </p>
+                      </IonLabel>
+                      <IonSelect
+                        placeholder="Servings"
+                        onIonChange={(e) =>
+                          handleServingChange(item.id, e.detail.value)
+                        }
+                      >
+                        <IonSelectOption value={0.25}>1/4</IonSelectOption>
+                        <IonSelectOption value={0.5}>1/2</IonSelectOption>
+                        <IonSelectOption value={1}>1</IonSelectOption>
+                        <IonSelectOption value={2}>2</IonSelectOption>
+                        <IonSelectOption value={3}>3</IonSelectOption>
+                      </IonSelect>
+                      <IonCheckbox
+                        slot="start"
+                        checked={selectedItems.some(
+                          (selected) => selected.id === item.id
+                        )}
+                        onIonChange={() => toggleSelection(item)}
+                      />
+                    </IonItem>
+                  </IonCol>
+                </IonRow>
+              ))}
+            </IonGrid>
 
-            <IonButton
-              expand="block"
-              color="success"
-              onClick={addItemsToDailyCalories}
-              disabled={selectedItems.length === 0}
-              className="fixed-button"
-            >
-              Add Selected to Daily Calories
+            <IonButton expand="block" color="success" onClick={handleSaveSelectedItems}>
+              Save Selected Items
+            </IonButton>
+          </IonContent>
+        </IonModal>
+
+        {/* Barcode Modal */}
+        <IonModal isOpen={showBarcodeModal} onDidDismiss={() => setShowBarcodeModal(false)}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>Food Details</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            {foodDetails && (
+              <IonGrid>
+                <IonRow>
+                  <IonCol>
+                    <h2>{foodDetails.food_name}</h2>
+                    <p><strong>Brand:</strong> {foodDetails.brand_name}</p>
+                    <p><strong>Calories:</strong> {foodDetails.servings.serving[0].calories}</p>
+                    <p><strong>Carbs:</strong> {foodDetails.servings.serving[0].carbohydrate}</p>
+                    <p><strong>Protein:</strong> {foodDetails.servings.serving[0].protein}</p>
+                    <p><strong>Fat:</strong> {foodDetails.servings.serving[0].fat}</p>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>
+            )}
+            <IonButton expand="block" color="success" onClick={handleSaveBarcodeFood}>
+              Save Food
             </IonButton>
           </IonContent>
         </IonModal>
