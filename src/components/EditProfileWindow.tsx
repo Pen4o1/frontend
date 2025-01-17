@@ -40,8 +40,8 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
   const [firstName, setFirstName] = useState('');
   const [secondName, setSecondName] = useState('');
   const [birthdate, setBirthdate] = useState('');
-  const [height, setHeight] = useState('');
-  const [kilos, setKilos] = useState('');
+  const [height, setHeight] = useState<string>('');
+  const [kilos, setKilos] = useState<string>('');
   const [gender, setGender] = useState('');
   const [completedFields, setCompletedFields] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -88,8 +88,9 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
     }
   }, [isOpen]);
 
-  const isFieldFilled = (value: string | null | undefined) =>
-    typeof value === 'string' && value.trim() !== '';
+  const isFieldFilled = (value: string | null | undefined) => {
+    return String(value).trim() !== '';
+  }
 
   const handleSave = async () => {
     console.log({
@@ -123,11 +124,16 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
     };
 
     try {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        history.push('/login');
+        return;
+      }
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/update/profile', {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedData),
       });

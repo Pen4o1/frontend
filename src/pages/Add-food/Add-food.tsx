@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   IonContent,
   IonHeader,
@@ -83,7 +83,15 @@ const AddFood: React.FC = () => {
   };
 
   const handleServingChange = (itemId: string, multiplier: number) => {
+    // Update fetchedItems
     setFetchedItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId ? { ...item, servingMultiplier: multiplier } : item
+      )
+    );
+
+    // Update selectedItems if the item is already selected
+    setSelectedItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId ? { ...item, servingMultiplier: multiplier } : item
       )
@@ -97,7 +105,8 @@ const AddFood: React.FC = () => {
         prev.filter((selected) => selected.id !== item.id)
       );
     } else {
-      setSelectedItems((prev) => [...prev, item]);
+      const currentItem = fetchedItems.find((fetched) => fetched.id === item.id);
+      setSelectedItems((prev) => [...prev, { ...currentItem }]);
     }
   };
 
@@ -152,11 +161,10 @@ const AddFood: React.FC = () => {
         setBarcode(data.text);
         console.log('Scanned Barcode:', data.text);
 
-        const token = localStorage.getItem('jwt_token');
         const response = await fetch(
           `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode/${data.text}`,
           {
-            method: 'GET',
+            method: 'POST',
           }
         );
 

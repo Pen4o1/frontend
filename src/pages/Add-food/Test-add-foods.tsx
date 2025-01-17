@@ -17,18 +17,18 @@ import {
 import '../../components/styles/login-style.css'
 
 const TestCal: React.FC = () => {
-  const [consumed_cal, setConsumed_cal] = useState('')
+  const [barcode, setBarcode] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const history = useHistory()
 
   const handleSave = async (): Promise<void> => {
     try {
       const payload = {
-        consumed_cal,
+        barcode,
       }
 
       const response = await fetch(
-        'http://127.0.0.1:8000/api/save-daily-macros',
+        'https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode',
         {
           method: 'POST',
           credentials: 'include',
@@ -70,8 +70,8 @@ const TestCal: React.FC = () => {
                       <IonInput
                         placeholder="Weight (kg)"
                         type="number"
-                        value={consumed_cal}
-                        onIonChange={(e) => setConsumed_cal(e.detail.value!)}
+                        value={barcode}
+                        onIonChange={(e) => setBarcode(e.detail.value!)}
                       />
                     </IonItem>
                   </div>
