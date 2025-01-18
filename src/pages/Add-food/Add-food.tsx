@@ -49,9 +49,7 @@ const AddFood: React.FC = () => {
     try {
       const response = await fetch(
         `https://grown-evidently-chimp.ngrok-free.app/api/foods/search?query=${encodeURIComponent(inputValue)}`,
-        {
-          method: 'GET',
-        }
+        { method: 'GET' }
       );
 
       if (!response.ok) {
@@ -200,6 +198,56 @@ const AddFood: React.FC = () => {
     }
   };
 
+  const manulaInputBarcode = async () => {
+    if (!barcode || barcode.trim() === '') {
+      setErrorMessage('Please enter a valid barcode.');
+      return;
+    }
+  
+    setLoading(true);
+    setErrorMessage(null);
+    
+    const payload = {
+      barcode,
+    }
+
+    try {
+      // Change the fetch based on server requirements
+      const response = await fetch(
+        `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload), // Pass barcode in the body
+        }
+      );
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch food details.');
+      }
+  
+      const item = await response.json();
+      console.log('Fetched item from barcode:', item);
+  
+      if (!item.food) {
+        setErrorMessage('No food found for the provided barcode.');
+      } else {
+        setFoodDetails(item.food);
+        setShowBarcodeModal(true);
+      }
+    } catch (error) {
+      console.error('Error fetching barcode food:', error);
+      setErrorMessage('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+
   return (
     <IonPage>
       <IonContent>
@@ -226,6 +274,19 @@ const AddFood: React.FC = () => {
                   </IonButton>
                   {barcode && <IonText>Scanned Barcode: {barcode}</IonText>}
                 </SwiperSlide>
+
+                <SwiperSlide>
+                  <IonItem>
+                    <IonInput
+                      placeholder="Enter a barcode manually"
+                      value={barcode || ''}
+                      onIonChange={(e) => setBarcode(e.detail.value!)}
+                    />
+                  </IonItem>
+                  <IonButton expand="block" color="primary" onClick={manulaInputBarcode} disabled={loading}>
+                    {loading ? 'Fetching...' : 'Find Items'}
+                  </IonButton>
+                </SwiperSlide>
               </Swiper>
             </IonCol>
           </IonRow>
@@ -237,7 +298,6 @@ const AddFood: React.FC = () => {
           </IonText>
         )}
 
-        {/* Manual Selection Modal */}
         <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
           <IonHeader>
             <IonToolbar>
@@ -290,7 +350,6 @@ const AddFood: React.FC = () => {
           </IonContent>
         </IonModal>
 
-        {/* Barcode Modal */}
         <IonModal isOpen={showBarcodeModal} onDidDismiss={() => setShowBarcodeModal(false)}>
           <IonHeader>
             <IonToolbar>

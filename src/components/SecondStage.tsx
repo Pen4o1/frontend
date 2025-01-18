@@ -56,7 +56,6 @@ const SecondStage: React.FC<SecondStageProps> = ({
     try {
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/register', {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
