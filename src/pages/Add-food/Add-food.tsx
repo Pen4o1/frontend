@@ -180,7 +180,7 @@ const AddFood: React.FC = () => {
         console.log('Scanned Barcode:', data.text);
 
         const response = await fetch(
-          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode?query=${data.text}`,
+          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode?query=${encodeURIComponent(data.text)}`,
           {
             method: 'POST',
           }
