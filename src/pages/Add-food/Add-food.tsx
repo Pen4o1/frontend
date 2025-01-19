@@ -179,10 +179,16 @@ const AddFood: React.FC = () => {
         setBarcode(data.text);
         console.log('Scanned Barcode:', data.text);
 
+        const payload = { barcode: data.text };
+
         const response = await fetch(
-          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode?query=${encodeURIComponent(data.text)}`,
+          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode`,
           {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
           }
         );
 
