@@ -41,3 +41,23 @@
     padding: 20px; /* Adds some space inside the box */
     margin: 20px; /* Adds space around the box */
 }
+
+.shopping-list-modal {
+    padding: 16px;
+  }
+  
+  .shopping-list-content {
+    max-height: 70vh;
+    overflow-y: auto; 
+  }
+  
+  .scrollable-content {
+    padding: 0;
+  }
+  
+  .shopping-list-modal h2 {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  

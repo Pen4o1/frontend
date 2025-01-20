@@ -1,3 +1,5 @@
+// src/pages/MyProfile.tsx
+
 import React, { useState, useEffect } from 'react';
 import {
   IonPage,
@@ -7,10 +9,10 @@ import {
   IonIcon,
   IonToggle,
 } from '@ionic/react';
-import type { ToggleCustomEvent } from '@ionic/react';
-import { pencil, settings, logOut } from 'ionicons/icons';
+import { pencil, settings, logOut, list } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import EditProfileModal from '../../components/EditProfileWindow';
+import ShoppingListModal from '../../components/ShoppingListWindow';
 import '../../components/styles/profile-style.css';
 
 const MyProfile: React.FC = () => {
@@ -20,11 +22,12 @@ const MyProfile: React.FC = () => {
     last_name: '',
     avatar: '',
   });
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShoppingListModalOpen, setIsShoppingListModalOpen] = useState(false);
   const history = useHistory();
+
   // Dark theme toggle logic
-  const toggleChange = (event: ToggleCustomEvent) => {
+  const toggleChange = (event: any) => {
     toggleDarkTheme(event.detail.checked);
   };
 
@@ -53,19 +56,17 @@ const MyProfile: React.FC = () => {
 
   const logout = () => {
     localStorage.removeItem('jwt_token');
-    console.log("Func is called");
     history.push('/login');
-    return;
   };
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-      const token = localStorage.getItem('jwt_token');
-      if (!token) {
-        history.push('/login');
-        return;
-      }
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+          history.push('/login');
+          return;
+        }
         const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/user/profile', {
           method: 'GET',
           headers: {
@@ -93,8 +94,7 @@ const MyProfile: React.FC = () => {
     fetchUserData();
   }, []);
 
-  // To handle the chages from the popup
-  const handleSaveChanges = (updatedData: { first_name: string; last_name: string}) => {
+  const handleSaveChanges = (updatedData: { first_name: string; last_name: string }) => {
     setUserData({
       ...userData,
       ...updatedData,
@@ -122,6 +122,15 @@ const MyProfile: React.FC = () => {
               <IonIcon icon={pencil} slot="start" />
               Edit Profile
             </IonButton>
+            <IonButton
+              expand="block"
+              color="tertiary"
+              className="profile-button"
+              onClick={() => setIsShoppingListModalOpen(true)}
+            >
+              <IonIcon icon={list} slot="start" />
+              Shopping List
+            </IonButton>
             <IonButton expand="block" color="medium" className="profile-button">
               <IonIcon icon={settings} slot="start" />
               Settings
@@ -134,12 +143,9 @@ const MyProfile: React.FC = () => {
         </div>
       </IonContent>
 
-      <EditProfileModal
-        isOpen={isModalOpen}
-        onDismiss={() => setIsModalOpen(false)}
-        userData={userData}
-        onSave={handleSaveChanges}
-      />
+      <EditProfileModal isOpen={isModalOpen} onDismiss={() => setIsModalOpen(false)} userData={userData} onSave={handleSaveChanges} />
+
+      <ShoppingListModal isOpen={isShoppingListModalOpen} onDismiss={() => setIsShoppingListModalOpen(false)} />
     </IonPage>
   );
 };

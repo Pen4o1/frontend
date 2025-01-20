@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import {
   IonApp,
   IonRouterOutlet,
@@ -35,7 +35,6 @@ import TestCal from './pages/Add-food/Test-add-foods';
 import SetMealPlan from './components/MealPlan';
 import TestBAckend from './pages/FoodSearch';
 import TEstRecipes from './pages/test_for_recipes';
-import GetMealPlan from './components/GetMealPlan';
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -248,9 +247,6 @@ const App: React.FC = () => {
                   </IonTabButton>
                   <IonTabButton tab="Set Meal Plan" onClick={() => setShowMealWindow(true)}>
                     <IonButton>Set Meal Plan</IonButton>
-                  </IonTabButton>
-                  <IonTabButton tab="Get Meal Plan" onClick={() => setShowGetMealPlan(true)}>
-                    <IonButton>Get Meal Plan</IonButton>
                   </IonTabButton>
                 </IonTabBar>
               )}
