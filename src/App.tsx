@@ -10,6 +10,11 @@ import {
   IonLabel,
   IonTabs,
   IonLoading,
+  IonModal,
+  IonInput,
+  IonItem,
+  IonLabel as IonFormLabel,
+  IonButton as IonModalButton,
 } from '@ionic/react';
 import { home, add, person } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
@@ -61,11 +66,14 @@ const App: React.FC = () => {
   const [showMealWindow, setShowMealWindow] = useState(false);
   const [showGetMealPLan, setShowGetMealPlan] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [verificationModalOpen, setVerificationModalOpen] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const history = useHistory();
 
   useEffect(() => {
     const validateToken = async () => {
-      setLoading(true); 
+      setLoading(true);
       try {
         const token = localStorage.getItem('jwt_token');
         if (!token) {
@@ -88,8 +96,18 @@ const App: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           setIsLoggedIn(data.valid);
-          console.log(data.user);
           setIsCompleated(data.compleated);
+
+          // Store user email
+          const email = data.user.email;
+          setUserEmail(email);
+
+          // If email is not verified, trigger email verification
+          if (data.user.email_verified_at === null) {
+            setVerificationModalOpen(true); // Show modal to input the verification code
+            // Send verification email request with the user's email
+            await sendVerificationEmail(token, email);
+          }
         } else {
           setIsLoggedIn(false);
         }
@@ -103,6 +121,64 @@ const App: React.FC = () => {
 
     validateToken();
   }, [history]); // Runs only once on mount
+
+  // Function to send the verification email request
+  const sendVerificationEmail = async (token: string, email: string) => {
+    try {
+      const response = await fetch(
+        'https://grown-evidently-chimp.ngrok-free.app/api/send-verification-code',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email }), // Add email in the payload
+        }
+      );
+      if (!response.ok) {
+        console.error('Failed to send verification email');
+      }
+    } catch (error) {
+      console.error('Error sending verification email', error);
+    }
+  };
+
+  // Function to verify the code entered by the user
+  const verifyCode = async () => {
+    const token = localStorage.getItem('jwt_token');
+    if (!token || !verificationCode || !userEmail) {
+      console.error('Invalid input');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(
+        'https://grown-evidently-chimp.ngrok-free.app/api/verify-email',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email: userEmail, verification_code: verificationCode }), // Use the stored email and code
+        }
+      );
+
+      if (response.ok) {
+        // Close modal when email is verified
+        setVerificationModalOpen(false);
+        alert('Email successfully verified!');
+      } else {
+        alert('Verification failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error verifying email code', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
@@ -129,8 +205,7 @@ const App: React.FC = () => {
                   {isLoggedIn ? <Home/> : <Login />}
                 </Route>
                 <Route exact path="/register">
-                  {isLoggedIn ? <Home/> : <Register />}
-                </Route>
+                  {isLoggedIn ? <Home/> : <Register />}</Route>
                 <Route exact path="/forgot-password">
                   <ForgotPassword />
                 </Route>
@@ -168,22 +243,13 @@ const App: React.FC = () => {
 
               {isLoggedIn && isCompleated && (
                 <IonTabBar slot="top">
-                  <IonTabButton
-                    tab="Set Goal"
-                    onClick={() => setShowGoalWindow(true)}
-                  >
+                  <IonTabButton tab="Set Goal" onClick={() => setShowGoalWindow(true)}>
                     <IonButton>Set Goal</IonButton>
                   </IonTabButton>
-                  <IonTabButton
-                    tab="Set Meal Plan"
-                    onClick={() => setShowMealWindow(true)}
-                  >
+                  <IonTabButton tab="Set Meal Plan" onClick={() => setShowMealWindow(true)}>
                     <IonButton>Set Meal Plan</IonButton>
                   </IonTabButton>
-                  <IonTabButton
-                    tab="Get Meal Plan"
-                    onClick={() => setShowGetMealPlan(true)}
-                  >
+                  <IonTabButton tab="Get Meal Plan" onClick={() => setShowGetMealPlan(true)}>
                     <IonButton>Get Meal Plan</IonButton>
                   </IonTabButton>
                 </IonTabBar>
@@ -191,29 +257,34 @@ const App: React.FC = () => {
 
               {isLoggedIn && !isCompleated && (
                 <IonTabBar slot="top">
-                  <IonTabButton
-                    tab="Complete registration"
-                    href="/complete-registaration"
-                  >
+                  <IonTabButton tab="Complete registration" href="/complete-registaration">
                     <IonButton>Complete registration</IonButton>
                   </IonTabButton>
                 </IonTabBar>
               )}
             </IonTabs>
 
-            <SetGoalWindow
-              isOpen={showGoalWindow}
-              onClose={() => setShowGoalWindow(false)}
-            />
+            {/* Modal for verification */}
+            <IonModal 
+            isOpen={verificationModalOpen} 
+            onDidDismiss={() => setVerificationModalOpen(false)} 
+            backdropDismiss={false}
+            >
+              <IonItem>
+                <IonFormLabel>Verification Code</IonFormLabel>
+                <IonInput
+                  value={verificationCode}
+                  onIonChange={(e) => setVerificationCode(e.detail.value!)}
+                  placeholder="Enter the code from your email"
+                />
+              </IonItem>
+              <IonModalButton onClick={verifyCode}>Verify</IonModalButton>
+            </IonModal>
 
-            <SetMealPlan
-              isOpen={showMealWindow}
-              onClose={() => setShowMealWindow(false)}
-            />
+            <SetGoalWindow isOpen={showGoalWindow} onClose={() => setShowGoalWindow(false)} />
+            <SetMealPlan isOpen={showMealWindow} onClose={() => setShowMealWindow(false)} />
           </IonReactRouter>
-          <IonLoading
-            isOpen={loading}
-          />
+          <IonLoading isOpen={loading} />
         </IonApp>
       </UserContext.Provider>
     </GoogleOAuthProvider>
