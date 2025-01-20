@@ -131,6 +131,7 @@ const AddFood: React.FC = () => {
       console.log('Food saved successfully.');
       setSelectedItems([]);
       setShowModal(false);
+      setShowBarcodeModal(false);
       setFoodDetails(null);
     } catch (error) {
       console.error('Error saving food:', error);
@@ -195,7 +196,7 @@ const AddFood: React.FC = () => {
         if (response.ok) {
           const item = await response.json();
           console.log('Fetched item from barcode:', item);
-          setFoodDetails(item.food);
+          setFoodDetails(item.food.food);
           setShowBarcodeModal(true);
         }
       }
@@ -241,7 +242,7 @@ const AddFood: React.FC = () => {
       if (!item.food) {
         setErrorMessage('No food found for the provided barcode.');
       } else {
-        setFoodDetails(item.food);
+        setFoodDetails(item.food.food);
         setShowBarcodeModal(true);
       }
     } catch (error) {
@@ -311,48 +312,54 @@ const AddFood: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <IonContent>
-            <IonGrid>
-              {fetchedItems.map((item) => (
-                <IonRow key={item.id}>
-                  <IonCol>
-                    <IonItem>
-                      <IonLabel>
-                        <h2>{item.name}</h2>
-                        <p>
-                          <strong>Calories:</strong> {item.calories}
-                        </p>
-                        <p>
-                          <strong>Serving:</strong> {item.servingDescription}
-                        </p>
-                      </IonLabel>
-                      <IonSelect
-                        placeholder="Servings"
-                        onIonChange={(e) =>
-                          handleServingChange(item.id, e.detail.value)
-                        }
-                      >
-                        <IonSelectOption value={0.25}>1/4</IonSelectOption>
-                        <IonSelectOption value={0.5}>1/2</IonSelectOption>
-                        <IonSelectOption value={1}>1</IonSelectOption>
-                        <IonSelectOption value={2}>2</IonSelectOption>
-                        <IonSelectOption value={3}>3</IonSelectOption>
-                      </IonSelect>
-                      <IonCheckbox
-                        slot="start"
-                        checked={selectedItems.some(
-                          (selected) => selected.id === item.id
-                        )}
-                        onIonChange={() => toggleSelection(item)}
-                      />
-                    </IonItem>
-                  </IonCol>
-                </IonRow>
-              ))}
-            </IonGrid>
+            <div className="item-select-container">
+              <div className="item-select">
+                <IonGrid>
+                  {fetchedItems.map((item) => (
+                    <IonRow key={item.id}>
+                      <IonCol>
+                        <IonItem>
+                          <IonLabel>
+                            <h2>{item.name}</h2>
+                            <p>
+                              <strong>Calories:</strong> {item.calories}
+                            </p>
+                            <p>
+                              <strong>Serving:</strong> {item.servingDescription}
+                            </p>
+                          </IonLabel>
+                          <IonSelect
+                            placeholder="Servings"
+                            onIonChange={(e) =>
+                              handleServingChange(item.id, e.detail.value)
+                            }
+                          >
+                            <IonSelectOption value={0.25}>1/4</IonSelectOption>
+                            <IonSelectOption value={0.5}>1/2</IonSelectOption>
+                            <IonSelectOption value={1}>1</IonSelectOption>
+                            <IonSelectOption value={2}>2</IonSelectOption>
+                            <IonSelectOption value={3}>3</IonSelectOption>
+                          </IonSelect>
+                          <IonCheckbox
+                            slot="start"
+                            checked={selectedItems.some(
+                              (selected) => selected.id === item.id
+                            )}
+                            onIonChange={() => toggleSelection(item)}
+                          />
+                        </IonItem>
+                      </IonCol>
+                    </IonRow>
+                  ))}
+                </IonGrid>
+              </div>
 
-            <IonButton expand="block" color="success" onClick={handleSaveSelectedItems}>
-              Save Selected Items
-            </IonButton>
+              <div className="button-container">
+                <IonButton expand="block" color="success" className="fixed-button" onClick={handleSaveSelectedItems}>
+                  Save Selected Items
+                </IonButton>
+              </div>
+            </div>
           </IonContent>
         </IonModal>
 
@@ -363,25 +370,54 @@ const AddFood: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <IonContent>
-            {foodDetails && (
-              <IonGrid>
-                <IonRow>
-                  <IonCol>
-                    <h2>{foodDetails.food_name}</h2>
-                    <p><strong>Brand:</strong> {foodDetails.brand_name}</p>
-                    <p><strong>Calories:</strong> {foodDetails.servings.serving[0].calories}</p>
-                    <p><strong>Carbs:</strong> {foodDetails.servings.serving[0].carbohydrate}</p>
-                    <p><strong>Protein:</strong> {foodDetails.servings.serving[0].protein}</p>
-                    <p><strong>Fat:</strong> {foodDetails.servings.serving[0].fat}</p>
-                  </IonCol>
-                </IonRow>
-              </IonGrid>
-            )}
-            <IonButton expand="block" color="success" onClick={handleSaveBarcodeFood}>
-              Save Food
-            </IonButton>
+            <div className="food-details-container">
+              <div className="food-details">
+                {foodDetails && foodDetails.servings && foodDetails.servings.serving && foodDetails.servings.serving.length > 0 ? (
+                  <IonGrid>
+                    <IonRow>
+                      <IonCol>
+                        <h2>{foodDetails.food_name}</h2>
+                        <p><strong>Serving:</strong> {foodDetails.servings.serving[0].serving_description}</p>
+                        <p><strong>Brand:</strong> {foodDetails.brand_name}</p>
+                        <p><strong>Calories:</strong> {foodDetails.servings.serving[0].calories}</p>
+                        <p><strong>Carbs:</strong> {foodDetails.servings.serving[0].carbohydrate}</p>
+                        <p><strong>Protein:</strong> {foodDetails.servings.serving[0].protein}</p>
+                        <p><strong>Fat:</strong> {foodDetails.servings.serving[0].fat}</p>
+                        
+                        {/* Serving Options Dropdown */}
+                        <IonItem>
+                          <IonLabel>Servings</IonLabel>
+                          <IonSelect
+                            placeholder="Select Serving"
+                            onIonChange={(e) => handleServingChange(foodDetails.id, e.detail.value)}
+                          >
+                            <IonSelectOption value={0.25}>1/4</IonSelectOption>
+                            <IonSelectOption value={0.5}>1/2</IonSelectOption>
+                            <IonSelectOption value={1}>1</IonSelectOption>
+                            <IonSelectOption value={2}>2</IonSelectOption>
+                            <IonSelectOption value={3}>3</IonSelectOption>
+                          </IonSelect>
+                        </IonItem>
+                      </IonCol>
+                    </IonRow>
+                  </IonGrid>
+                ) : (
+                  <IonText color="danger">
+                    <p>Food details are unavailable. Please try again later.</p>
+                  </IonText>
+                )}
+              </div>
+
+              <div className="button-container">
+                <IonButton expand="block" color="success" className="fixed-button" onClick={handleSaveBarcodeFood}>
+                  Save Food
+                </IonButton>
+              </div>
+            </div>
           </IonContent>
         </IonModal>
+
+
       </IonContent>
     </IonPage>
   );

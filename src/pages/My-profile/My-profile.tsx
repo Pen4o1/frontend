@@ -51,6 +51,13 @@ const MyProfile: React.FC = () => {
     };
   }, []);
 
+  const logout = () => {
+    localStorage.removeItem('jwt_token');
+    console.log("Func is called");
+    history.push('/login');
+    return;
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -119,7 +126,7 @@ const MyProfile: React.FC = () => {
               <IonIcon icon={settings} slot="start" />
               Settings
             </IonButton>
-            <IonButton expand="block" color="danger" className="profile-button">
+            <IonButton expand="block" color="danger" className="profile-button" onClick={logout}>
               <IonIcon icon={logOut} slot="start" />
               Logout
             </IonButton>

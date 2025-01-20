@@ -142,7 +142,6 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
         throw new Error('Failed to save profile data');
       }
 
-      const data = await response.json();
       setErrorMessage(null);
       onSave(updatedData);
       onDismiss();
