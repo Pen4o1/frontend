@@ -10,11 +10,6 @@ import {
   IonLabel,
   IonTabs,
   IonLoading,
-  IonModal,
-  IonInput,
-  IonItem,
-  IonLabel as IonFormLabel,
-  IonButton as IonModalButton,
 } from '@ionic/react';
 import { home, add, person } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
@@ -35,6 +30,7 @@ import TestCal from './pages/Add-food/Test-add-foods';
 import SetMealPlan from './components/MealPlan';
 import TestBAckend from './pages/FoodSearch';
 import TEstRecipes from './pages/test_for_recipes';
+import VerificationCodeModal from './components/VerificationCodeWindow';
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -63,10 +59,8 @@ const App: React.FC = () => {
   const [isCompleated, setIsCompleated] = useState(false);
   const [showGoalWindow, setShowGoalWindow] = useState(false);
   const [showMealWindow, setShowMealWindow] = useState(false);
-  const [showGetMealPLan, setShowGetMealPlan] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verificationModalOpen, setVerificationModalOpen] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const history = useHistory();
 
@@ -118,7 +112,6 @@ const App: React.FC = () => {
     validateToken();
   }, [history]); // Runs only once on mount
 
-  // Function to send the verification email request
   const sendVerificationEmail = async (token: string, email: string) => {
     try {
       const response = await fetch(
@@ -129,7 +122,7 @@ const App: React.FC = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ email }), // Add email in the payload
+          body: JSON.stringify({ email }),
         }
       );
       if (!response.ok) {
@@ -140,9 +133,9 @@ const App: React.FC = () => {
     }
   };
 
-  const verifyCode = async () => {
+  const handleVerifyCode = async (code: string) => {
     const token = localStorage.getItem('jwt_token');
-    if (!token || !verificationCode || !userEmail) {
+    if (!token || !code || !userEmail) {
       console.error('Invalid input');
       return;
     }
@@ -157,12 +150,11 @@ const App: React.FC = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ email: userEmail, verification_code: verificationCode }), // Use the stored email and code
+          body: JSON.stringify({ email: userEmail, verification_code: code }),
         }
       );
 
       if (response.ok) {
-        // Close modal when email is verified
         setVerificationModalOpen(false);
         alert('Email successfully verified!');
       } else {
@@ -256,22 +248,11 @@ const App: React.FC = () => {
               )}
             </IonTabs>
 
-            {/* Modal for verification */}
-            <IonModal 
-            isOpen={verificationModalOpen} 
-            onDidDismiss={() => setVerificationModalOpen(false)} 
-            backdropDismiss={false}
-            >
-              <IonItem>
-                <IonFormLabel>Verification Code</IonFormLabel>
-                <IonInput
-                  value={verificationCode}
-                  onIonChange={(e) => setVerificationCode(e.detail.value!)}
-                  placeholder="Enter the code from your email"
-                />
-              </IonItem>
-              <IonModalButton onClick={verifyCode}>Verify</IonModalButton>
-            </IonModal>
+            <VerificationCodeModal
+              isOpen={verificationModalOpen}
+              onDismiss={() => setVerificationModalOpen(false)}
+              onVerify={handleVerifyCode}
+            />
 
             <SetGoalWindow isOpen={showGoalWindow} onClose={() => setShowGoalWindow(false)} />
             <SetMealPlan isOpen={showMealWindow} onClose={() => setShowMealWindow(false)} />
