@@ -1,5 +1,3 @@
-// src/pages/MyProfile.tsx
-
 import React, { useState, useEffect } from 'react';
 import {
   IonPage,
@@ -9,7 +7,7 @@ import {
   IonIcon,
   IonToggle,
 } from '@ionic/react';
-import { pencil, settings, logOut, list } from 'ionicons/icons';
+import { pencil, settings, logOut, list, menuOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import EditProfileModal from '../../components/EditProfileWindow';
 import ShoppingListModal from '../../components/ShoppingListWindow';
@@ -144,7 +142,6 @@ const MyProfile: React.FC = () => {
       </IonContent>
 
       <EditProfileModal isOpen={isModalOpen} onDismiss={() => setIsModalOpen(false)} userData={userData} onSave={handleSaveChanges} />
-
       <ShoppingListModal isOpen={isShoppingListModalOpen} onDismiss={() => setIsShoppingListModalOpen(false)} />
     </IonPage>
   );

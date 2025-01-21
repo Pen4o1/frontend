@@ -97,14 +97,11 @@ const App: React.FC = () => {
           setIsLoggedIn(data.valid);
           setIsCompleated(data.compleated);
 
-          // Store user email
           const email = data.user.email;
           setUserEmail(email);
 
-          // If email is not verified, trigger email verification
           if (data.user.email_verified_at === null) {
-            setVerificationModalOpen(true); // Show modal to input the verification code
-            // Send verification email request with the user's email
+            setVerificationModalOpen(true); 
             await sendVerificationEmail(token, email);
           }
         } else {
@@ -143,7 +140,6 @@ const App: React.FC = () => {
     }
   };
 
-  // Function to verify the code entered by the user
   const verifyCode = async () => {
     const token = localStorage.getItem('jwt_token');
     if (!token || !verificationCode || !userEmail) {
