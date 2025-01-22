@@ -115,7 +115,7 @@ const App: React.FC = () => {
   const sendVerificationEmail = async (token: string, email: string) => {
     try {
       const response = await fetch(
-        'https://grown-evidently-chimp.ngrok-free.app/api/send-verification-code',
+        'https://grown-evidently-chimp.ngrok-free.app/api/send/verification/code',
         {
           method: 'POST',
           headers: {
@@ -143,7 +143,7 @@ const App: React.FC = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        'https://grown-evidently-chimp.ngrok-free.app/api/verify-email',
+        'https://grown-evidently-chimp.ngrok-free.app/api/verify/email',
         {
           method: 'POST',
           headers: {
@@ -248,14 +248,12 @@ const App: React.FC = () => {
               )}
             </IonTabs>
 
-            <VerificationCodeModal
-              isOpen={verificationModalOpen}
-              onDismiss={() => setVerificationModalOpen(false)}
-              onVerify={handleVerifyCode}
-            />
-
+            <VerificationCodeModal isOpen={verificationModalOpen} onDismiss={() => setVerificationModalOpen(false)} onVerify={handleVerifyCode} />
+            
             <SetGoalWindow isOpen={showGoalWindow} onClose={() => setShowGoalWindow(false)} />
+            
             <SetMealPlan isOpen={showMealWindow} onClose={() => setShowMealWindow(false)} />
+          
           </IonReactRouter>
           <IonLoading isOpen={loading} />
         </IonApp>

@@ -11,6 +11,7 @@ import { pencil, settings, logOut, list, menuOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import EditProfileModal from '../../components/EditProfileWindow';
 import ShoppingListModal from '../../components/ShoppingListWindow';
+import SettingsWindow from '../../components/SettingsWindow'; 
 import '../../components/styles/profile-style.css';
 
 const MyProfile: React.FC = () => {
@@ -22,6 +23,7 @@ const MyProfile: React.FC = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isShoppingListModalOpen, setIsShoppingListModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);  
   const history = useHistory();
 
   // Dark theme toggle logic
@@ -54,7 +56,7 @@ const MyProfile: React.FC = () => {
 
   const logout = () => {
     localStorage.removeItem('jwt_token');
-    history.push('/login');
+    window.location.href = '/login'; 
   };
 
   useEffect(() => {
@@ -129,7 +131,7 @@ const MyProfile: React.FC = () => {
               <IonIcon icon={list} slot="start" />
               Shopping List
             </IonButton>
-            <IonButton expand="block" color="medium" className="profile-button">
+            <IonButton expand="block" color="medium" className="profile-button" onClick={() => setIsSettingsModalOpen(true)}>
               <IonIcon icon={settings} slot="start" />
               Settings
             </IonButton>
@@ -143,6 +145,7 @@ const MyProfile: React.FC = () => {
 
       <EditProfileModal isOpen={isModalOpen} onDismiss={() => setIsModalOpen(false)} userData={userData} onSave={handleSaveChanges} />
       <ShoppingListModal isOpen={isShoppingListModalOpen} onDismiss={() => setIsShoppingListModalOpen(false)} />
+      <SettingsWindow isOpen={isSettingsModalOpen} onDismiss={() => setIsSettingsModalOpen(false)} />
     </IonPage>
   );
 };
