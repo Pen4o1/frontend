@@ -18,7 +18,6 @@ import {
   IonSelectOption,
 } from '@ionic/react'
 import { arrowBackCircle } from 'ionicons/icons'
-import { useHistory } from 'react-router-dom'
 import './styles/register-style.css'
 
 interface SecondStageProps {
@@ -43,7 +42,6 @@ const SecondStage: React.FC<SecondStageProps> = ({
 }) => {
   const [message, setMessage] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const history = useHistory()
 
   const handleCompleteRegistration = async () => {
     const parsedHeight = parseFloat(formData.height)
@@ -77,10 +75,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
       }
   
       setMessage(result.message || 'Registration complete')
-  
-      if (result.redirect_url) {
-        history.push(result.redirect_url)
-      }
+      window.location.href = '/home'; 
     } catch (error) {
       setMessage('Error connecting to the server.')
     } finally {

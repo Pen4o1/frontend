@@ -11,6 +11,7 @@ import {
   IonSelect,
   IonSelectOption,
   IonFooter,
+  IonInput,
 } from '@ionic/react'
 import { useHistory } from 'react-router-dom';
 
@@ -19,7 +20,7 @@ const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   onClose,
 }) => {
   const [activityLevel, setActivityLevel] = useState('')
-  const [goal, setGoal] = useState('')
+  const [targetWeight, setTargetWeight] = useState('')
   const history = useHistory();
   const handleSave = async () => {
     const token = localStorage.getItem('jwt_token');
@@ -27,7 +28,7 @@ const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
         history.push('/login');
         return;
       }
-    const payload = { goal, activityLevel }
+    const payload = { activityLevel, targetWeight }
     try {
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/save/goal', {
         method: 'POST',
@@ -76,12 +77,16 @@ const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
           </IonSelect>
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">Goal</IonLabel>
-          <IonSelect value={goal} onIonChange={(e) => setGoal(e.detail.value)}>
-            <IonSelectOption value="lose">Lose Weight</IonSelectOption>
-            <IonSelectOption value="maintain">Maintain Weight</IonSelectOption>
-            <IonSelectOption value="gain">Gain Weight</IonSelectOption>
-          </IonSelect>
+          <IonLabel position="stacked"> Target Weight </IonLabel> 
+          <IonInput
+            type="number"
+            value={targetWeight}
+            onIonChange={(e) =>
+              setTargetWeight(e.detail.value!)
+            }
+            placeholder="Weight (kg)"
+            required
+          />
         </IonItem>
       </IonContent>
       <IonFooter>
