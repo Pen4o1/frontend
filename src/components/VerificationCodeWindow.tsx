@@ -62,7 +62,7 @@ const VerificationCodeModal: React.FC<VerificationCodeModalProps> = ({
               id={`code-input-${index}`}
               className="verification-input"
               value={digit}
-              type="text"
+              type="number"
               maxlength={1}
               onIonInput={(e: any) => handleInputChange(e.target.value, index)}
               onKeyDown={(e: any) => {
