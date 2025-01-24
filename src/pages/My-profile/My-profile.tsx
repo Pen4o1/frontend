@@ -7,11 +7,10 @@ import {
   IonIcon,
   IonToggle,
 } from '@ionic/react';
-import { pencil, settings, logOut, list, menuOutline } from 'ionicons/icons';
+import { pencil, logOut, list, menuOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import EditProfileModal from '../../components/EditProfileWindow';
 import ShoppingListModal from '../../components/ShoppingListWindow';
-import SettingsWindow from '../../components/SettingsWindow';
 import MealPlanWindow from '../../components/GetMealPlan';
 import '../../components/styles/profile-style.css';
 
@@ -121,17 +120,26 @@ const MyProfile: React.FC = () => {
               Dark Mode
             </IonToggle>
 
-            {/* Meal Plan Button */}
+            <IonButton 
+              expand="block" 
+              color="primary" 
+              className="profile-button" 
+              onClick={() => setIsModalOpen(true)}
+            >
+              <IonIcon icon={pencil} slot="start" />
+              Edit Profile
+            </IonButton>
+
             <IonButton
               expand="block"
               color="success"
               className="profile-button"
               onClick={() => setIsMealPlanModalOpen(true)}
             >
+              <IonIcon icon={menuOutline} slot="start"/>
               View Meal Plan
             </IonButton>
 
-            {/* Shopping List Button */}
             <IonButton
               expand="block"
               color="tertiary"
@@ -141,12 +149,13 @@ const MyProfile: React.FC = () => {
               <IonIcon icon={list} slot="start" />
               Shopping List
             </IonButton>
-
-            <IonButton expand="block" color="medium" className="profile-button" onClick={() => setIsSettingsModalOpen(true)}>
-              <IonIcon icon={settings} slot="start" />
-              Settings
-            </IonButton>
-            <IonButton expand="block" color="danger" className="profile-button" onClick={logout}>
+            
+            <IonButton 
+              expand="block" 
+              color="danger" 
+              className="profile-button" 
+              onClick={logout}
+            >
               <IonIcon icon={logOut} slot="start" />
               Logout
             </IonButton>
@@ -160,11 +169,8 @@ const MyProfile: React.FC = () => {
       {/* Shopping List Modal */}
       <ShoppingListModal isOpen={isShoppingListModalOpen} onDismiss={() => setIsShoppingListModalOpen(false)} />
 
-      {/* Settings Modal */}
-      <SettingsWindow isOpen={isSettingsModalOpen} onDismiss={() => setIsSettingsModalOpen(false)} />
-
       {/* Meal Plan Modal */}
-      <MealPlanWindow isOpen={isMealPlanModalOpen} onClose={() => setIsMealPlanModalOpen(false)} />
+      <MealPlanWindow isOpen={isMealPlanModalOpen} onDismiss={() => setIsMealPlanModalOpen(false)} />
     </IonPage>
   );
 };

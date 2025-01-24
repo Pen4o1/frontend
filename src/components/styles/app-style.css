@@ -20,4 +20,24 @@
  .compleated-registration{
   text-align: center;
  } 
-  
+
+ /* Aligning the settings button to the left */
+.custom-tab-bar {
+  display: flex;
+  justify-content: flex-start;
+  padding-right: 10px;
+}
+
+.icon-button {
+  --padding-start: 0;
+  --padding-end: 0;
+  --border-radius: 50%;
+  --background: transparent;
+  --ion-button-color: #000; 
+}
+
+.clear-button {
+  --ion-button-border-width: 0;
+  --ion-button-background: transparent;
+  --ion-button-color: #000; /* Optional: change the color to fit your theme */
+}

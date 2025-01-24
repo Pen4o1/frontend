@@ -20,6 +20,7 @@ import { UserContext } from '../../App';
 import { useHistory } from 'react-router-dom';
 import { eye, eyeOff } from 'ionicons/icons';
 import { getClientId, getPlatform } from '../../utils/platform';
+import ForgotPassword from '../Forgotten-password/Forgot-password';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -192,6 +193,16 @@ const Login: React.FC = () => {
                     Continue with Google
                   </IonButton>
                 </div>
+
+                <IonButton
+                  expand="block"
+                  fill="clear"
+                  className="forgot-password-button"
+                  routerLink="/forgot-password"
+                  disabled={loading}
+                >
+                  Forgot Password?
+                </IonButton>
 
                 <IonLoading isOpen={loading} />
               </div>
