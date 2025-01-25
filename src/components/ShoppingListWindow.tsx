@@ -15,7 +15,6 @@ interface ShoppingListModalProps {
 const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss }) => {
   const [shoppingList, setShoppingList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
 
   useEffect(() => {
@@ -50,7 +49,7 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
   };
 
   return (
-    <IonModal isOpen={isOpen} onDidDismiss={onDismiss} backdropDismiss={false}>
+    <IonModal isOpen={isOpen} onDidDismiss={onDismiss} >
       <div className="shopping-list-modal">
         <h2>Your Shopping List</h2>
 
