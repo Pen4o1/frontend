@@ -1,0 +1,11 @@
+{
+	"appId": "com.macro.genie",
+	"appName": "Macro Genie",
+	"webDir": "www",
+	"packageClassList": [
+		"AppPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"StatusBarPlugin"
+	]
+}
