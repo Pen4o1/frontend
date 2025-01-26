@@ -20,7 +20,6 @@ import { UserContext } from '../../App';
 import { useHistory } from 'react-router-dom';
 import { eye, eyeOff } from 'ionicons/icons';
 import { getClientId, getPlatform } from '../../utils/platform';
-import ForgotPassword from '../Forgotten-password/Forgot-password';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -175,11 +174,11 @@ const Login: React.FC = () => {
 
                 <IonButton
                   expand="block"
-                  fill="outline"
-                  className="register-button"
+                  className="login-button"
+                  href="/register"
                   disabled={loading}
                 >
-                  <a href="/register">Create New Account</a>
+                  Create New Account
                 </IonButton>
 
                 <div className="social-login-buttons">

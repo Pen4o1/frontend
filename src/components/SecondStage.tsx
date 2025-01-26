@@ -68,7 +68,6 @@ const SecondStage: React.FC<SecondStageProps> = ({
         return
       }
   
-      // Store token in local storage if provided in response
       if (result.token) {
         localStorage.setItem('jwt_token', result.token)
         console.log('Token saved to local storage')

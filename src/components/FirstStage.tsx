@@ -161,6 +161,14 @@ const FirstStage: React.FC<FirstStageProps> = ({
                   Continue with Google
                 </IonButton>
 
+                <IonButton
+                  expand="block"
+                  href="/login"
+                  disabled={loading}
+                >
+                  Already have an account?
+                </IonButton>
+
                 {message && (
                   <IonText color="medium" className="error-message">
                     <div>{message}</div>

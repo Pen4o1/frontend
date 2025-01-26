@@ -136,7 +136,6 @@ const App: React.FC = () => {
       <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn, isCompleated, setIsCompleated }}>
         <IonApp>
           <IonReactRouter>
-            {/* ValidateToken now inside router context */}
             <ValidateToken 
               onValidation={handleValidation} 
               onVerificationRequired={handleVerificationRequired} 
