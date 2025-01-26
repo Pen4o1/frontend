@@ -208,6 +208,9 @@ const Login: React.FC = () => {
             </IonCol>
           </IonRow>
         </IonGrid>
+        <IonText className="version-text">
+          Version 1.0.0
+        </IonText>
       </IonContent>
     </IonPage>
   );
