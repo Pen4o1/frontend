@@ -14,7 +14,7 @@ const ValidateToken: React.FC<ValidateTokenProps> = ({ onValidation, onVerificat
 
       try {
         const token = localStorage.getItem('jwt_token');
-        if (token == null) {
+        if (!token) {
           onValidation(false, false, '', false);
           return;
         }
