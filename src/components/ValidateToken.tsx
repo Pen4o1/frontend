@@ -11,8 +11,6 @@ const ValidateToken: React.FC<ValidateTokenProps> = ({ onValidation, onVerificat
 
   useEffect(() => {
     const validateToken = async () => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       try {
         const token = localStorage.getItem('jwt_token');
@@ -27,10 +25,8 @@ const ValidateToken: React.FC<ValidateTokenProps> = ({ onValidation, onVerificat
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-        signal: controller.signal, // Attach abort signal
       });
 
-      clearTimeout(timeoutId); 
         if (response.ok) {
           const data = await response.json();
           const email = data.user.email;
