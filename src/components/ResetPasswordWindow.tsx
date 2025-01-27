@@ -4,8 +4,13 @@ import {
   IonButton,
   IonInput,
   IonText,
+  IonIcon,
+  IonItem,
 } from '@ionic/react';
 import './styles/verification-code-window.css';
+import { eye, eyeOff } from 'ionicons/icons';
+
+
 
 interface PasswordResetVerificationModalProps {
   isOpen: boolean;
@@ -22,6 +27,8 @@ const PasswordResetVerificationModal: React.FC<PasswordResetVerificationModalPro
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const inputRefs = useRef<(HTMLIonInputElement | null)[]>([]);
 
   const handleInputChange = (value: string, index: number) => {
@@ -96,20 +103,40 @@ const PasswordResetVerificationModal: React.FC<PasswordResetVerificationModalPro
         </div>
 
         <div className="password-fields">
-          <IonInput
-            type="password"
-            placeholder="New Password"
-            value={newPassword}
-            onIonChange={(e) => setNewPassword(e.detail.value!)}
-            className="password-input"
-          />
-          <IonInput
-            type="password"
-            placeholder="Confirm New Password"
-            value={confirmPassword}
-            onIonChange={(e) => setConfirmPassword(e.detail.value!)}
-            className="password-input"
-          />
+          <IonItem>
+            <IonInput
+              type={showPassword ? 'text' : 'password'}
+              value={newPassword}
+              onIonChange={(e) => setNewPassword(e.detail.value!)}
+              placeholder="Enter your password"
+              required
+            />
+            <IonIcon
+              slot="end"
+              icon={showPassword ? eye : eyeOff}
+              onClick={() => setShowPassword(!showPassword)}
+            />
+          </IonItem>
+  
+          <IonItem>
+            <IonInput
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={confirmPassword}
+              onIonChange={(e) =>
+                setConfirmPassword(e.detail.value!)
+              }
+              placeholder="Confirm password"
+              required
+            >
+              <IonIcon
+                slot="end"
+                icon={showConfirmPassword ? eye : eyeOff}
+                onClick={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+              />
+            </IonInput>
+          </IonItem>
         </div>
 
         {error && <IonText color="danger" className="error-message">{error}</IonText>}

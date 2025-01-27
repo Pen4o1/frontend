@@ -19,7 +19,10 @@ import '../../components/styles/login-style.css';
 import { UserContext } from '../../App';
 import { useHistory } from 'react-router-dom';
 import { eye, eyeOff } from 'ionicons/icons';
+import { GoogleLogin } from '@react-oauth/google';
 import { getClientId, getPlatform } from '../../utils/platform';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -81,6 +84,38 @@ const Login: React.FC = () => {
       setErrorMessage('Network error. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+
+  const handleNativeGoogleLogin = async () => {
+    try {
+      const result = await GoogleAuth.signIn();
+      const { idToken, accessToken } = result.authentication;
+
+      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/mobile/google-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_token: idToken,
+          access_token: accessToken,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('jwt_token', data.token);
+        setIsLoggedIn(true);
+        setIsCompleated(data.user.compleated);
+        history.push(data.redirect_url);
+      } else {
+        setErrorMessage('Google login failed');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      setErrorMessage('Google login failed');
     }
   };
   
@@ -183,14 +218,14 @@ const Login: React.FC = () => {
 
                 <div className="social-login-buttons">
                 <IonButton
-                    href="https://grown-evidently-chimp.ngrok-free.app/api/auth/google"
-                    expand="block"
-                    color="medium"
-                    className="social-button"
-                    disabled={loading}
-                  >
-                    Continue with Google
-                  </IonButton>
+                  expand="block"
+                  color="medium"
+                  className="social-button"
+                  onClick={handleNativeGoogleLogin}
+                  disabled={loading}
+                >
+                  Continue with Google
+                </IonButton>
                 </div>
 
                 <IonButton

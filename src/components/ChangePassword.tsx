@@ -6,8 +6,11 @@ import {
   IonItem, 
   IonLabel, 
   IonText,
-  IonLoading
+  IonLoading,
+  IonIcon
 } from '@ionic/react';
+import { eye, eyeOff } from 'ionicons/icons';
+
 
 interface PasswordChangeModalProps {
   isOpen: boolean;
@@ -23,6 +26,8 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -83,29 +88,39 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
         <h2>Change Password</h2>
         
         <IonItem>
-          <IonLabel position="stacked">New Password</IonLabel>
           <IonInput
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             value={newPassword}
-            onIonChange={(e) => {
-              setNewPassword(e.detail.value!);
-              setError('');
-            }}
-            placeholder="Enter new password"
+            onIonChange={(e) => setNewPassword(e.detail.value!)}
+            placeholder="Enter your password"
+            required
+            disabled={loading}
+          />
+          <IonIcon
+            slot="end"
+            icon={showPassword ? eye : eyeOff}
+            onClick={() => setShowPassword(!showPassword)}
           />
         </IonItem>
 
         <IonItem>
-          <IonLabel position="stacked">Confirm Password</IonLabel>
           <IonInput
-            type="password"
+            type={showConfirmPassword ? 'text' : 'password'}
             value={confirmPassword}
-            onIonChange={(e) => {
-              setConfirmPassword(e.detail.value!);
-              setError('');
-            }}
-            placeholder="Confirm new password"
-          />
+            onIonChange={(e) =>
+              setConfirmPassword(e.detail.value!)
+            }
+            placeholder="Confirm password"
+            required
+          >
+            <IonIcon
+              slot="end"
+              icon={showConfirmPassword ? eye : eyeOff}
+              onClick={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
+            />
+          </IonInput>
         </IonItem>
 
         {error && <IonText color="danger">{error}</IonText>}
