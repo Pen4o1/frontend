@@ -71,11 +71,12 @@ const App: React.FC = () => {
     setIsLoggedIn(isValid);
     setIsCompleated(isComplete);
     setUserEmail(email);
-    setLoading(false);
 
     if (isValid && !emailVerified) {
       setVerificationModalOpen(true);
     }
+
+    setLoading(false);
   };
 
   const handleVerificationRequired = async (token: string, email: string) => {
