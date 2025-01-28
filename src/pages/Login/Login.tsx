@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   IonContent,
   IonPage,
@@ -15,14 +15,11 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/react';
-import '../../components/styles/login-style.css';
+import { eye, eyeOff } from 'ionicons/icons';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { UserContext } from '../../App';
 import { useHistory } from 'react-router-dom';
-import { eye, eyeOff } from 'ionicons/icons';
-import { GoogleLogin } from '@react-oauth/google';
-import { getClientId, getPlatform } from '../../utils/platform';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
-
+import '../../components/styles/login-style.css';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -32,6 +29,15 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const context = useContext(UserContext);
   const history = useHistory();
+
+  useEffect(() => {
+    // Initialize Google Auth for web
+    GoogleAuth.initialize({
+      clientId: '918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com',
+      scopes: ['profile', 'email'],
+      grantOfflineAccess: true
+    });
+  }, []);
 
   if (!context) {
     throw new Error('UserContext must be used within a UserContext.Provider');
@@ -49,30 +55,18 @@ const Login: React.FC = () => {
     try {
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/login', {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
         const data: LoginResponse = await response.json();
-  
-        // Save the token in local storage
         localStorage.setItem('jwt_token', data.token);
-  
         setIsLoggedIn(true);
         setIsCompleated(true);
-        setErrorMessage(null);
-  
-        if (data.redirect_url) {
-          console.log('Login successful:', data);
-          history.push(data.redirect_url);
-        }
+        history.push(data.redirect_url);
       } else if (response.status === 422) {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Invalid credentials.');
@@ -87,20 +81,23 @@ const Login: React.FC = () => {
     }
   };
 
-
-  const handleNativeGoogleLogin = async () => {
+  const handleGoogleLogin = async () => {
+    setLoading(true);
     try {
       const result = await GoogleAuth.signIn();
-      const { idToken, accessToken } = result.authentication;
+      
+      if (!result.authentication?.idToken) {
+        throw new Error('No ID token received');
+      }
 
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/mobile/google-login', {
+      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/web/google-login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id_token: idToken,
-          access_token: accessToken,
+          id_token: result.authentication.idToken,
+          access_token: result.authentication.accessToken
         }),
       });
 
@@ -113,42 +110,17 @@ const Login: React.FC = () => {
       } else {
         setErrorMessage('Google login failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Google login error:', error);
-      setErrorMessage('Google login failed');
+      setErrorMessage(
+        error.message === 'popup_closed_by_user' 
+          ? 'Login canceled' 
+          : 'Google login failed'
+      );
+    } finally {
+      setLoading(false);
     }
   };
-  
-/*
-  const handleGoogleLogin = () => {
-    const platform = getPlatform();
-    const clientId = getClientId(); // Retrieves client ID from environment
-    const redirectUri =
-      platform === 'ios'
-        ? import.meta.env.VITE_IOS_REDIRECT_URI // Using the iOS redirect URI from .env
-        : import.meta.env.VITE_WEB_REDIRECT_URI; // Using the Web redirect URI from .env
-  
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}&response_type=code&scope=profile email openid`;
-  
-    window.location.href = googleAuthUrl; // Redirects to Google OAuth page
-  };
-
-  for the button
-  <IonButton
-                    expand="block"
-                    color="medium"
-                    className="social-button"
-                    onClick={handleGoogleLogin}
-                    disabled={loading}
-                  >
-                    Continue with Google
-                  </IonButton>
-
-    i need to fix for the ios
-
-*/
 
   return (
     <IonPage>
@@ -165,6 +137,7 @@ const Login: React.FC = () => {
                 <IonItem>
                   <h2>Login</h2>
                 </IonItem>
+
                 <IonItem>
                   <IonInput
                     type="email"
@@ -217,15 +190,15 @@ const Login: React.FC = () => {
                 </IonButton>
 
                 <div className="social-login-buttons">
-                <IonButton
-                  expand="block"
-                  color="medium"
-                  className="social-button"
-                  onClick={handleNativeGoogleLogin}
-                  disabled={loading}
-                >
-                  Continue with Google
-                </IonButton>
+                  <IonButton
+                    expand="block"
+                    color="medium"
+                    className="social-button"
+                    onClick={handleGoogleLogin}
+                    disabled={loading}
+                  >
+                    Continue with Google
+                  </IonButton>
                 </div>
 
                 <IonButton
@@ -252,6 +225,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-
-
-

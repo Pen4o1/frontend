@@ -63,7 +63,7 @@ const App: React.FC = () => {
   const [showGoalWindow, setShowGoalWindow] = useState(false);
   const [showMealWindow, setShowMealWindow] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [verificationModalOpen, setVerificationModalOpen] = useState(false);
   const [userEmail, setUserEmail] = useState('');
 

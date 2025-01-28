@@ -18,21 +18,6 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>com.googleusercontent.apps.918043959140-fo9rk75odt49nbmsbdgothp1pqlhh5kv</string>
-            </array>
-        </dict>
-    </array>
-	 <key>keychain-access-groups</key>
-    <array>
-        <string>$(AppIdentifierPrefix)com.macro.genie</string>
-    </array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
