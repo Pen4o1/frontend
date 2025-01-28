@@ -217,7 +217,7 @@ const Login: React.FC = () => {
           </IonRow>
         </IonGrid>
         <IonText className="version-text">
-          Version 1.0.0
+          Version 1.0.1
         </IonText>
       </IonContent>
     </IonPage>
