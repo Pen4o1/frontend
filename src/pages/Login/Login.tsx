@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   IonContent,
   IonPage,
@@ -16,10 +16,10 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { UserContext } from '../../App';
 import { useHistory } from 'react-router-dom';
 import '../../components/styles/login-style.css';
+import GoogleLogin from '../../components/GoogleLogin';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -30,25 +30,11 @@ const Login: React.FC = () => {
   const context = useContext(UserContext);
   const history = useHistory();
 
-  useEffect(() => {
-    // Initialize Google Auth for web
-    GoogleAuth.initialize({
-      clientId: '918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com',
-      scopes: ['profile', 'email'],
-      grantOfflineAccess: true
-    });
-  }, []);
-
   if (!context) {
     throw new Error('UserContext must be used within a UserContext.Provider');
   }
 
   const { setIsLoggedIn, setIsCompleated } = context;
-
-  interface LoginResponse {
-    token: string;
-    redirect_url: string;
-  }
 
   const handleLogin = async (): Promise<void> => {
     setLoading(true);
@@ -62,7 +48,7 @@ const Login: React.FC = () => {
       });
 
       if (response.ok) {
-        const data: LoginResponse = await response.json();
+        const data = await response.json();
         localStorage.setItem('jwt_token', data.token);
         setIsLoggedIn(true);
         setIsCompleated(true);
@@ -76,47 +62,6 @@ const Login: React.FC = () => {
     } catch (error) {
       console.error('Login error:', error);
       setErrorMessage('Network error. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    try {
-      const result = await GoogleAuth.signIn();
-      
-      if (!result.authentication?.idToken) {
-        throw new Error('No ID token received');
-      }
-
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/web/google-login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id_token: result.authentication.idToken,
-          access_token: result.authentication.accessToken
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('jwt_token', data.token);
-        setIsLoggedIn(true);
-        setIsCompleated(data.user.compleated);
-        history.push(data.redirect_url);
-      } else {
-        setErrorMessage('Google login failed');
-      }
-    } catch (error: any) {
-      console.error('Google login error:', error);
-      setErrorMessage(
-        error.message === 'popup_closed_by_user' 
-          ? 'Login canceled' 
-          : 'Google login failed'
-      );
     } finally {
       setLoading(false);
     }
@@ -190,15 +135,7 @@ const Login: React.FC = () => {
                 </IonButton>
 
                 <div className="social-login-buttons">
-                  <IonButton
-                    expand="block"
-                    color="medium"
-                    className="social-button"
-                    onClick={handleGoogleLogin}
-                    disabled={loading}
-                  >
-                    Continue with Google
-                  </IonButton>
+                  <GoogleLogin />
                 </div>
 
                 <IonButton
@@ -216,8 +153,8 @@ const Login: React.FC = () => {
             </IonCol>
           </IonRow>
         </IonGrid>
-        <IonText className="version-text">
-          Version 1.0.1
+        <IonText>
+          Version 1.0.2
         </IonText>
       </IonContent>
     </IonPage>

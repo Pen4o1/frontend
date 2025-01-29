@@ -16,6 +16,7 @@ import {
   IonLoading, // Import IonLoading
 } from '@ionic/react'
 import { eye, eyeOff, arrowForwardCircle } from 'ionicons/icons'
+import GoogleLogin from './GoogleLogin'
 
 interface FirstStageProps {
   handleSubmit: () => void
@@ -122,6 +123,7 @@ const FirstStage: React.FC<FirstStageProps> = ({
                     />
                   </IonInput>
                 </IonItem>
+                
                 <IonItem>
                   <IonInput
                     type={showConfirmPassword ? 'text' : 'password'}
@@ -151,15 +153,7 @@ const FirstStage: React.FC<FirstStageProps> = ({
                   {loading ? 'Loading...' : 'Next'}
                 </IonButton>
 
-                <IonButton
-                  href="http://127.0.0.1:8000/api/auth/google"
-                  expand="block"
-                  color="medium"
-                  className="social-button"
-                  disabled={loading}
-                >
-                  Continue with Google
-                </IonButton>
+                <GoogleLogin />
 
                 <IonButton
                   expand="block"
