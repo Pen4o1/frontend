@@ -29,6 +29,7 @@ import TestRecipes from './pages/test_for_recipes';
 import VerificationCodeModal from './components/VerificationCodeWindow';
 import ValidateToken from './components/ValidateToken';
 import SettingsWindow from './components/SettingsWindow';
+import UploadImage from './pages/My-profile/Upload'
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { setupIonicReact } from '@ionic/react';
@@ -177,6 +178,9 @@ const App: React.FC = () => {
                 </Route>
                 <Route exact path="/test3">
                   <TestRecipes />
+                </Route>
+                <Route exact path="/test4">
+                  <UploadImage />
                 </Route>
               </IonRouterOutlet>
 

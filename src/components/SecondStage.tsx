@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   IonContent,
   IonHeader,
@@ -16,23 +16,25 @@ import {
   IonLoading,
   IonSelect,
   IonSelectOption,
-} from '@ionic/react'
-import { arrowBackCircle } from 'ionicons/icons'
-import './styles/register-style.css'
+} from '@ionic/react';
+import { arrowBackCircle } from 'ionicons/icons';
+import './styles/register-style.css';
+import PhotoUpload from './PhotoUpload'; // Import PhotoUpload
 
 interface SecondStageProps {
   formData: {
-    first_name: string
-    last_name: string
-    email: string
-    password: string
-    birthdate: string
-    kilos: string
-    height: string
-    gender: string
-  }
-  updateFormData: (field: string, value: string) => void
-  handleBack: () => void
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    birthdate: string;
+    kilos: string;
+    height: string;
+    gender: string;
+    profileImage?: string; // Add profile image field
+  };
+  updateFormData: (field: string, value: string) => void;
+  handleBack: () => void;
 }
 
 const SecondStage: React.FC<SecondStageProps> = ({
@@ -40,17 +42,18 @@ const SecondStage: React.FC<SecondStageProps> = ({
   updateFormData,
   handleBack,
 }) => {
-  const [message, setMessage] = useState<string | null>(null)
-  const [loading, setLoading] = useState<boolean>(false)
+  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [profileImage, setProfileImage] = useState<string | null>(formData.profileImage || null);
 
   const handleCompleteRegistration = async () => {
-    const parsedHeight = parseFloat(formData.height)
-    const parsedKilos = parseFloat(formData.kilos)
-    const data = { ...formData, kilos: parsedKilos, height: parsedHeight }
-    console.log(data)
-  
-    setLoading(true)
-  
+    const parsedHeight = parseFloat(formData.height);
+    const parsedKilos = parseFloat(formData.kilos);
+    const data = { ...formData, kilos: parsedKilos, height: parsedHeight, profileImage };
+    console.log(data);
+
+    setLoading(true);
+
     try {
       const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/register', {
         method: 'POST',
@@ -59,29 +62,33 @@ const SecondStage: React.FC<SecondStageProps> = ({
           Accept: 'application/json',
         },
         body: JSON.stringify(data),
-      })
-  
-      const result = await response.json()
-  
+      });
+
+      const result = await response.json();
+
       if (!response.ok) {
-        setMessage(result.message || 'Registration failed')
-        return
+        setMessage(result.message || 'Registration failed');
+        return;
       }
-  
+
       if (result.token) {
-        localStorage.setItem('jwt_token', result.token)
-        console.log('Token saved to local storage')
+        localStorage.setItem('jwt_token', result.token);
+        console.log('Token saved to local storage');
       }
-  
-      setMessage(result.message || 'Registration complete')
-      window.location.href = '/home'; 
+
+      setMessage(result.message || 'Registration complete');
+      window.location.href = '/home';
     } catch (error) {
-      setMessage('Error connecting to the server.')
+      setMessage('Error connecting to the server.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-  
+  };
+
+  const handleImageUpload = (imageUrl: string) => {
+    setProfileImage(imageUrl);
+    updateFormData('profileImage', imageUrl); // Update form data with the image URL
+  };
 
   return (
     <IonPage>
@@ -95,7 +102,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
           <IonRow className="ion-justify-content-center ion-align-items-center">
             <IonCol size="1" className="ion-align-self-center">
               <IonButton onClick={handleBack} fill="clear" disabled={loading}>
-                <IonIcon icon={arrowBackCircle} slot="icon-only" color="black"/>
+                <IonIcon icon={arrowBackCircle} slot="icon-only" color="black" />
               </IonButton>
             </IonCol>
             <IonCol size="12" sizeMd="6" sizeLg="4">
@@ -104,9 +111,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
                   <IonInput
                     type="date"
                     value={formData.birthdate}
-                    onIonChange={(e) =>
-                      updateFormData('birthdate', e.detail.value!)
-                    }
+                    onIonChange={(e) => updateFormData('birthdate', e.detail.value!)}
                     placeholder="Birthdate"
                     required
                     disabled={loading}
@@ -116,9 +121,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
                   <IonInput
                     type="number"
                     value={formData.height}
-                    onIonChange={(e) =>
-                      updateFormData('height', e.detail.value!)
-                    }
+                    onIonChange={(e) => updateFormData('height', e.detail.value!)}
                     placeholder="Height (cm)"
                     required
                     disabled={loading}
@@ -128,9 +131,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
                   <IonInput
                     type="number"
                     value={formData.kilos}
-                    onIonChange={(e) =>
-                      updateFormData('kilos', e.detail.value!)
-                    }
+                    onIonChange={(e) => updateFormData('kilos', e.detail.value!)}
                     placeholder="Weight (kg)"
                     required
                     disabled={loading}
@@ -140,20 +141,28 @@ const SecondStage: React.FC<SecondStageProps> = ({
                   <IonSelect
                     value={formData.gender}
                     placeholder="Select Gender"
-                    onIonChange={(e) =>
-                      updateFormData('gender', e.detail.value!)
-                    }
+                    onIonChange={(e) => updateFormData('gender', e.detail.value!)}
                     disabled={loading}
                   >
                     <IonSelectOption value="male">Male</IonSelectOption>
                     <IonSelectOption value="female">Female</IonSelectOption>
                   </IonSelect>
                 </IonItem>
-                <IonButton
-                  expand="block"
-                  onClick={handleCompleteRegistration}
-                  disabled={loading}
-                >
+
+                {/* Photo Upload Section */}
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                  <h3>Upload Profile Picture</h3>
+                  <PhotoUpload onImageUpload={handleImageUpload} />
+                  {profileImage && (
+                    <img
+                      src={profileImage}
+                      alt="Profile Preview"
+                      style={{ width: 100, height: 100, marginTop: 10, borderRadius: '50%' }}
+                    />
+                  )}
+                </div>
+
+                <IonButton expand="block" onClick={handleCompleteRegistration} disabled={loading}>
                   {loading ? 'Submitting...' : 'Complete Registration'}
                 </IonButton>
 
@@ -170,7 +179,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
         </IonGrid>
       </IonContent>
     </IonPage>
-  )
-}
+  );
+};
 
-export default SecondStage
+export default SecondStage;

@@ -85,7 +85,7 @@ const MyProfile: React.FC = () => {
         setUserData({
           first_name: result.first_name,
           last_name: result.last_name,
-          avatar: result.avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg',
+          avatar: result.profile_picture || 'https://ionicframework.com/docs/img/demos/avatar.svg',
         });
       } catch (error) {
         console.error('Error fetching user data:', error);
