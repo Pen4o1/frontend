@@ -1,4 +1,3 @@
-// GoogleLogin.tsx
 import React, { useState, useEffect, useContext } from 'react';
 import { IonButton, IonLoading, IonText } from '@ionic/react';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
