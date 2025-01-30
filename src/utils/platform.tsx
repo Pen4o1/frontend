@@ -1,18 +1,11 @@
-export const getPlatform = (): 'web' | 'ios' => {
+export const getPlatform = (): 'web' | 'ios'| 'android'=> {
   const userAgent = navigator.userAgent || navigator.vendor;
 
   if (/iPad|iPhone|iPod/.test(userAgent)) {
     return 'ios';
   }
-  return 'web';
-};
-
-export const getClientId = (): string => {
-  const platform = getPlatform();
-  switch (platform) {
-    case 'ios':
-      return import.meta.env.VITE_IOS_CLIENT_ID; 
-    default:
-      return import.meta.env.VITE_WEB_CLIENT_ID;
+  if (/Android/.test(userAgent)) {
+    return 'android';
   }
+  return 'web';
 };

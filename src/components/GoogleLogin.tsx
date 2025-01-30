@@ -3,6 +3,7 @@ import { IonButton, IonLoading, IonText } from '@ionic/react';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { UserContext } from '../App';
 import { useHistory } from 'react-router-dom';
+import { getPlatform } from '../utils/platform'
 
 const GoogleLogin: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -10,9 +11,22 @@ const GoogleLogin: React.FC = () => {
   const context = useContext(UserContext);
   const history = useHistory();
 
+  const getClientId = (): string => {
+    const platform = getPlatform();
+    switch (platform) {
+      case 'ios':
+        return 'com.googleusercontent.apps.918043959140-fo9rk75odt49nbmsbdgothp1pqlhh5kv';
+      case 'android':
+        return 'andoiId now only test'; 
+      default:
+        return '918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com';
+    }
+  };
+
   useEffect(() => {
+    const clientId = getClientId();
     GoogleAuth.initialize({
-      clientId: '918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com',
+      clientId: clientId,
       scopes: ['profile', 'email'],
       grantOfflineAccess: true
     });
