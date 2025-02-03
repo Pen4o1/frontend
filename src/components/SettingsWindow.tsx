@@ -38,7 +38,6 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({ isOpen, onDismiss }) =>
         isOpen={showPasswordModal}
         onDismiss={() => setShowPasswordModal(false)}
         onPasswordChanged={() => {
-          // Add any post-password-change logic here
           console.log('Password changed successfully!');
         }}
       />

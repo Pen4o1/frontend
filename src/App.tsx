@@ -61,6 +61,7 @@ setupIonicReact();
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCompleated, setIsCompleated] = useState(false);
+  const [isGoogle, setIsGoogle] = useState(false);
   const [showGoalWindow, setShowGoalWindow] = useState(false);
   const [showMealWindow, setShowMealWindow] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -68,10 +69,11 @@ const App: React.FC = () => {
   const [verificationModalOpen, setVerificationModalOpen] = useState(false);
   const [userEmail, setUserEmail] = useState('');
 
-  const handleValidation = (isValid: boolean, isComplete: boolean, email: string, emailVerified: boolean) => {
+  const handleValidation = (isValid: boolean, isComplete: boolean, email: string, emailVerified: boolean, isGoogle: boolean) => {
     setIsLoggedIn(isValid);
     setIsCompleated(isComplete);
     setUserEmail(email);
+    setIsGoogle(isGoogle);
 
     if (isValid && !emailVerified) {
       setVerificationModalOpen(true);

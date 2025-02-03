@@ -4,6 +4,7 @@ import {
   IonButton, 
   IonItem, 
   IonLabel, 
+  IonCheckbox, 
   IonLoading 
 } from '@ionic/react';
 
@@ -12,10 +13,17 @@ interface ShoppingListModalProps {
   onDismiss: () => void;
 }
 
+interface ShoppingItem {
+  id: number;
+  name: string;
+  quantity: number;
+  unit: string;
+  bought: boolean;
+}
+
 const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss }) => {
-  const [shoppingList, setShoppingList] = useState<any[]>([]);
+  const [shoppingList, setShoppingList] = useState<ShoppingItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  
 
   useEffect(() => {
     if (isOpen) {
@@ -40,6 +48,9 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
       }
 
       const data = await response.json();
+      console.log('Fetched Shopping List:', data); // Debugging log
+
+      // Directly use the `id` from the backend response
       setShoppingList(data.shopping_list);
     } catch (error) {
       console.error('Error fetching shopping list:', error);
@@ -48,18 +59,60 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
     }
   };
 
+  const toggleBoughtStatus = async (itemId: number, currentStatus: boolean) => {
+    const token = localStorage.getItem('jwt_token');
+    
+    if (itemId === undefined) {
+      console.error('Error: itemId is undefined');
+      return;
+    }
+
+    const payload = { id: itemId, bought: !currentStatus };
+    console.log('Updating item:', payload); // Debugging log
+
+    try {
+      const response = await fetch(`https://grown-evidently-chimp.ngrok-free.app/api/update/shopping/item`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update item status.');
+      }
+
+      // Update UI immediately
+      setShoppingList((prevList) => {
+        const updatedList = prevList.map(item => 
+          item.id === itemId ? { ...item, bought: !currentStatus } : item
+        );
+        return updatedList.sort((a, b) => Number(a.bought) - Number(b.bought));
+      });
+    } catch (error) {
+      console.error('Error updating item status:', error);
+    }
+  };
+
   return (
-    <IonModal isOpen={isOpen} onDidDismiss={onDismiss} >
+    <IonModal isOpen={isOpen} onDidDismiss={onDismiss}>
       <div className="shopping-list-modal">
         <h2>Your Shopping List</h2>
 
-        <IonLoading isOpen={isLoading}/>
+        <IonLoading isOpen={isLoading} />
 
         {!isLoading && shoppingList.length > 0 && (
           <div className="shopping-list-content">
-            {shoppingList.map((item, index) => (
-              <IonItem key={index}>
-                <IonLabel>
+            {shoppingList.map((item) => (
+              <IonItem key={item.id}>
+                <IonCheckbox 
+                  slot="start" 
+                  checked={item.bought} 
+                  onIonChange={() => toggleBoughtStatus(item.id, item.bought)}
+                />
+                <IonLabel style={{ textDecoration: item.bought ? 'line-through' : 'none' }}>
                   {item.quantity === 0 ? (
                     item.name
                   ) : (
