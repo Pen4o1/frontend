@@ -51,7 +51,6 @@ const MacrosChart: React.FC = () => {
         { name: 'Proteins', value: result.protein_consumed },
       ];
 
-      // Check if all values are zero, and if so, set a demo dataset
       const isAllZero = fetchedData.every((item) => item.value === 0);
       if (isAllZero) {
         setData([
@@ -90,7 +89,7 @@ const MacrosChart: React.FC = () => {
     <div className="macros-chart">
       {loading ? (
         <div className="loader">
-          <IonSpinner name="crescent" /> {/* Ionic Spinner */}
+          <IonSpinner name="crescent" />
         </div>
       ) : error ? (
         <p className="error-message">{error}</p>

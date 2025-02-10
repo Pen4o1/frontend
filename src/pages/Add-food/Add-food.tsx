@@ -36,7 +36,6 @@ const AddFood: React.FC = () => {
   const [foodDetails, setFoodDetails] = useState<any | null>(null);
   const [showBarcodeModal, setShowBarcodeModal] = useState(false);
 
-  // Fetch items for the search query
   const fetchItems = async () => {
     if (!inputValue.trim()) {
       setErrorMessage('Please enter a valid input.');
@@ -178,8 +177,6 @@ const AddFood: React.FC = () => {
         console.log('Barcode scan was cancelled');
       } else {
         setBarcode(data.text);
-        console.log('Scanned Barcode:', data.text);
-
         const payload = { barcode: data.text };
 
         const response = await fetch(
@@ -384,7 +381,6 @@ const AddFood: React.FC = () => {
                         <p><strong>Protein:</strong> {foodDetails.servings.serving[0].protein}</p>
                         <p><strong>Fat:</strong> {foodDetails.servings.serving[0].fat}</p>
                         
-                        {/* Serving Options Dropdown */}
                         <IonItem>
                           <IonLabel>Servings</IonLabel>
                           <IonSelect
