@@ -15,6 +15,7 @@ const RegisterForm: React.FC = () => {
     kilos: '',
     height: '',
     gender: '',
+    profileImage: '',
   })
 
   const handleFirstStageSubmit = () => {

@@ -19,7 +19,7 @@ import {
 } from '@ionic/react';
 import { arrowBackCircle } from 'ionicons/icons';
 import './styles/register-style.css';
-import PhotoUpload from './PhotoUpload'; // Import PhotoUpload
+import PhotoUpload from './PhotoUpload';
 
 interface SecondStageProps {
   formData: {
@@ -31,7 +31,7 @@ interface SecondStageProps {
     kilos: string;
     height: string;
     gender: string;
-    profileImage?: string; // Add profile image field
+    profileImage?: string;
   };
   updateFormData: (field: string, value: string) => void;
   handleBack: () => void;
@@ -44,12 +44,14 @@ const SecondStage: React.FC<SecondStageProps> = ({
 }) => {
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string | null>(formData.profileImage || null);
+  const [profileImage, setProfileImage] = useState<string | null>(
+    formData.profileImage || null
+  );
 
   const handleCompleteRegistration = async () => {
     const parsedHeight = parseFloat(formData.height);
     const parsedKilos = parseFloat(formData.kilos);
-    const data = { ...formData, kilos: parsedKilos, height: parsedHeight, profileImage };
+    const data = { ...formData, kilos: parsedKilos, height: parsedHeight };
     console.log(data);
 
     setLoading(true);
@@ -85,9 +87,58 @@ const SecondStage: React.FC<SecondStageProps> = ({
     }
   };
 
-  const handleImageUpload = (imageUrl: string) => {
+  const handleImageUpload = async (imageUrl: string) => {
     setProfileImage(imageUrl);
-    updateFormData('profileImage', imageUrl); // Update form data with the image URL
+    updateFormData("profileImage", imageUrl); // Update form data with image URL
+    console.log("Captured image URL:", imageUrl);
+    await uploadImage(imageUrl);
+  };
+
+  const uploadImage = async (imageUrl: string) => {
+    setLoading(true);
+
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      const mimeType = blob.type;
+      const fileExtension = mimeType.split("/")[1]; // Get correct file extension
+
+      if (!fileExtension) {
+        throw new Error("Could not determine file extension.");
+      }
+
+      const formData = new FormData();
+      formData.append("profile_picture", blob, `profile_${Date.now()}.${fileExtension}`);
+
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        alert("User not authenticated");
+        return;
+      }
+
+      const uploadResponse = await fetch("https://grown-evidently-chimp.ngrok-free.app/api/upload-profile-picture", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await uploadResponse.json();
+      if (uploadResponse.ok) {
+        setProfileImage(data.profile_picture_url);
+        updateFormData("profileImage", data.profile_picture_url); // Store the uploaded image
+        console.log("Uploaded image URL:", data.profile_picture_url);
+      } else {
+        alert(data.error || "Image upload failed.");
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Upload failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -149,14 +200,14 @@ const SecondStage: React.FC<SecondStageProps> = ({
                   </IonSelect>
                 </IonItem>
 
-                {/* Photo Upload Section */}
-                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <div className="photo-upload-container">
                   <h3>Upload Profile Picture</h3>
                   <PhotoUpload onImageUpload={handleImageUpload} />
                   {profileImage && (
                     <img
                       src={profileImage}
                       alt="Profile Preview"
+                      className="profile-image"
                       style={{ width: 100, height: 100, marginTop: 10, borderRadius: '50%' }}
                     />
                   )}

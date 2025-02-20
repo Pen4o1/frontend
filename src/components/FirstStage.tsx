@@ -38,7 +38,7 @@ const FirstStage: React.FC<FirstStageProps> = ({
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false) // State for loading indicator
+  const [loading, setLoading] = useState(false) 
 
   const isFormValid = () => {
     return (
@@ -57,7 +57,7 @@ const FirstStage: React.FC<FirstStageProps> = ({
       return
     }
     setMessage(null)
-    setLoading(true) // Start loading
+    setLoading(true) 
     handleSubmit()
   }
 
