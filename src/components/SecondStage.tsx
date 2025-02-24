@@ -44,101 +44,60 @@ const SecondStage: React.FC<SecondStageProps> = ({
 }) => {
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string | null>(
-    formData.profileImage || null
-  );
+  const [profileImage, setProfileImage] = useState<string | null>(formData.profileImage || null);
 
   const handleCompleteRegistration = async () => {
-    const parsedHeight = parseFloat(formData.height);
-    const parsedKilos = parseFloat(formData.kilos);
-    const data = { ...formData, kilos: parsedKilos, height: parsedHeight };
-    console.log(data);
-
     setLoading(true);
 
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+        const formDataToSend = new FormData();
 
-      const result = await response.json();
+        // Convert profile image to a Blob if it's a local image
+        if (profileImage && profileImage.startsWith("blob:")) {
+            const blob = await fetch(profileImage).then(res => res.blob());
+            formDataToSend.append("profile_picture", blob, `profile_${Date.now()}.jpg`);
+        }
 
-      if (!response.ok) {
-        setMessage(result.message || 'Registration failed');
-        return;
-      }
+        // Append other form data
+        formDataToSend.append("first_name", formData.first_name);
+        formDataToSend.append("last_name", formData.last_name);
+        formDataToSend.append("email", formData.email);
+        formDataToSend.append("password", formData.password);
+        formDataToSend.append("birthdate", formData.birthdate);
+        formDataToSend.append("kilos", formData.kilos);
+        formDataToSend.append("height", formData.height);
+        formDataToSend.append("gender", formData.gender);
 
-      if (result.token) {
-        localStorage.setItem('jwt_token', result.token);
-        console.log('Token saved to local storage');
-      }
+        const response = await fetch("https://grown-evidently-chimp.ngrok-free.app/api/register", {
+            method: "POST",
+            body: formDataToSend, // Send as FormData instead of JSON
+        });
 
-      setMessage(result.message || 'Registration complete');
-      window.location.href = '/home';
+        const result = await response.json();
+
+        if (!response.ok) {
+            setMessage(result.message || "Registration failed");
+            return;
+        }
+
+        if (result.token) {
+            localStorage.setItem("jwt_token", result.token);
+        }
+
+        setMessage(result.message || "Registration complete");
+        window.location.href = "/home";
     } catch (error) {
-      setMessage('Error connecting to the server.');
+        setMessage("Error connecting to the server.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
-  const handleImageUpload = async (imageUrl: string) => {
+
+  const handleImageUpload = (imageUrl: string) => {
     setProfileImage(imageUrl);
-    updateFormData("profileImage", imageUrl); // Update form data with image URL
+    updateFormData("profileImage", imageUrl); // Store the photo URL in form data
     console.log("Captured image URL:", imageUrl);
-    await uploadImage(imageUrl);
-  };
-
-  const uploadImage = async (imageUrl: string) => {
-    setLoading(true);
-
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-
-      const mimeType = blob.type;
-      const fileExtension = mimeType.split("/")[1]; // Get correct file extension
-
-      if (!fileExtension) {
-        throw new Error("Could not determine file extension.");
-      }
-
-      const formData = new FormData();
-      formData.append("profile_picture", blob, `profile_${Date.now()}.${fileExtension}`);
-
-      const token = localStorage.getItem("jwt_token");
-      if (!token) {
-        alert("User not authenticated");
-        return;
-      }
-
-      const uploadResponse = await fetch("https://grown-evidently-chimp.ngrok-free.app/api/upload-profile-picture", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      const data = await uploadResponse.json();
-      if (uploadResponse.ok) {
-        setProfileImage(data.profile_picture_url);
-        updateFormData("profileImage", data.profile_picture_url); // Store the uploaded image
-        console.log("Uploaded image URL:", data.profile_picture_url);
-      } else {
-        alert(data.error || "Image upload failed.");
-      }
-    } catch (error) {
-      console.error("Upload failed:", error);
-      alert("Upload failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
