@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { IonButton, IonLoading, IonText } from '@ionic/react';
+import { IonButton, IonIcon, IonLoading, IonText } from '@ionic/react';
+import { logoGoogle } from 'ionicons/icons';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { UserContext } from '../App';
 import { useHistory } from 'react-router-dom';
-import { getPlatform } from '../utils/platform'
+import { getPlatform } from '../utils/platform';
+import '../components/styles/google-login-style.css'
 
 const GoogleLogin: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -17,7 +19,7 @@ const GoogleLogin: React.FC = () => {
       case 'ios':
         return 'com.googleusercontent.apps.918043959140-fo9rk75odt49nbmsbdgothp1pqlhh5kv';
       case 'android':
-        return 'andoiId now only test'; 
+        return 'android-client-id'; 
       default:
         return '918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com';
     }
@@ -28,7 +30,7 @@ const GoogleLogin: React.FC = () => {
     GoogleAuth.initialize({
       clientId: clientId,
       scopes: ['profile', 'email'],
-      grantOfflineAccess: true
+      grantOfflineAccess: true,
     });
   }, []);
 
@@ -54,7 +56,7 @@ const GoogleLogin: React.FC = () => {
         },
         body: JSON.stringify({
           id_token: result.authentication.idToken,
-          access_token: result.authentication.accessToken
+          access_token: result.authentication.accessToken,
         }),
       });
 
@@ -70,8 +72,8 @@ const GoogleLogin: React.FC = () => {
     } catch (error: any) {
       console.error('Google login error:', error);
       setErrorMessage(
-        error.message === 'popup_closed_by_user' 
-          ? 'Login canceled' 
+        error.message === 'popup_closed_by_user'
+          ? 'Login canceled'
           : 'Google login failed'
       );
     } finally {
@@ -88,11 +90,11 @@ const GoogleLogin: React.FC = () => {
       )}
       <IonButton
         expand="block"
-        color="medium"
         className="social-button"
         onClick={handleGoogleLogin}
         disabled={loading}
       >
+        <IonIcon icon={logoGoogle} slot="start" />
         Continue with Google
       </IonButton>
       <IonLoading isOpen={loading} />

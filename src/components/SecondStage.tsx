@@ -58,7 +58,6 @@ const SecondStage: React.FC<SecondStageProps> = ({
             formDataToSend.append("profile_picture", blob, `profile_${Date.now()}.jpg`);
         }
 
-        // Append other form data
         formDataToSend.append("first_name", formData.first_name);
         formDataToSend.append("last_name", formData.last_name);
         formDataToSend.append("email", formData.email);

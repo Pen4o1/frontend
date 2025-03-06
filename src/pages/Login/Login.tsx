@@ -116,6 +116,13 @@ const Login: React.FC = () => {
                   </IonText>
                 )}
 
+                <a
+                  className="forgot-password"
+                  href="/forgot-password"
+                >
+                  Forgot Password?
+                </a>
+
                 <IonButton
                   expand="block"
                   className="login-button"
@@ -125,29 +132,21 @@ const Login: React.FC = () => {
                   {loading ? 'Logging in...' : 'Login'}
                 </IonButton>
 
-                <IonButton
-                  expand="block"
-                  className="login-button"
-                  href="/register"
-                  disabled={loading}
+                <p
+                  className='sign-up-text'
                 >
-                  Create New Account
-                </IonButton>
+                  Don't have an account? <a href='/register' className='sign-up-link'> Sign Up</a>
+                </p>
+
+                <div className="or-container">
+                  <span className="or-line"></span>
+                  <span className="or-text">OR</span>
+                  <span className="or-line"></span>
+                </div>
 
                 <div className="social-login-buttons">
                   <GoogleLogin />
                 </div>
-
-                <IonButton
-                  expand="block"
-                  fill="clear"
-                  className="forgot-password-button"
-                  routerLink="/forgot-password"
-                  disabled={loading}
-                >
-                  Forgot Password?
-                </IonButton>
-
                 <IonLoading isOpen={loading} />
               </div>
             </IonCol>
