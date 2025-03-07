@@ -13,10 +13,12 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonLoading, // Import IonLoading
+  IonLoading,
 } from '@ionic/react'
-import { eye, eyeOff, arrowForwardCircle } from 'ionicons/icons'
+import { eye, eyeOff } from 'ionicons/icons'
 import GoogleLogin from './GoogleLogin'
+import '../components/styles/login-style.css'
+import '../components/styles/register-style.css'
 
 interface FirstStageProps {
   handleSubmit: () => void
@@ -148,20 +150,24 @@ const FirstStage: React.FC<FirstStageProps> = ({
                   expand="block"
                   onClick={handleNextClick}
                   disabled={!isFormValid() || loading}
+                  className="next-button"
                 >
-                  <IonIcon icon={arrowForwardCircle} slot="start" />
                   {loading ? 'Loading...' : 'Next'}
                 </IonButton>
+                
+                <div className="or-container">
+                  <span className="or-line"></span>
+                  <span className="or-text">OR</span>
+                  <span className="or-line"></span>
+                </div>
 
                 <GoogleLogin />
 
-                <IonButton
-                  expand="block"
-                  href="/login"
-                  disabled={loading}
+                <p
+                  className='sign-up-text'
                 >
-                  Already have an account?
-                </IonButton>
+                  Already have an account? <a href='/login' className='sign-up-link'> Sign In</a>
+                </p>
 
                 {message && (
                   <IonText color="medium" className="error-message">

@@ -90,11 +90,11 @@ const GoogleLogin: React.FC = () => {
       )}
       <IonButton
         expand="block"
-        className="social-button"
+        className="google-button"
         onClick={handleGoogleLogin}
         disabled={loading}
       >
-        <IonIcon icon={logoGoogle} slot="start" />
+        <IonIcon icon={logoGoogle} className="google-icon"/>
         Continue with Google
       </IonButton>
       <IonLoading isOpen={loading} />

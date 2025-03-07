@@ -17,9 +17,8 @@ import {
   IonSelect,
   IonSelectOption,
 } from '@ionic/react';
-import { arrowBackCircle } from 'ionicons/icons';
+import { camera } from 'ionicons/icons'; // Import camera icon
 import './styles/register-style.css';
-import PhotoUpload from './PhotoUpload';
 
 interface SecondStageProps {
   formData: {
@@ -50,53 +49,50 @@ const SecondStage: React.FC<SecondStageProps> = ({
     setLoading(true);
 
     try {
-        const formDataToSend = new FormData();
+      const formDataToSend = new FormData();
 
-        // Convert profile image to a Blob if it's a local image
-        if (profileImage && profileImage.startsWith("blob:")) {
-            const blob = await fetch(profileImage).then(res => res.blob());
-            formDataToSend.append("profile_picture", blob, `profile_${Date.now()}.jpg`);
-        }
+      if (profileImage && profileImage.startsWith("blob:")) {
+        const blob = await fetch(profileImage).then(res => res.blob());
+        formDataToSend.append("profile_picture", blob, `profile_${Date.now()}.jpg`);
+      }
 
-        formDataToSend.append("first_name", formData.first_name);
-        formDataToSend.append("last_name", formData.last_name);
-        formDataToSend.append("email", formData.email);
-        formDataToSend.append("password", formData.password);
-        formDataToSend.append("birthdate", formData.birthdate);
-        formDataToSend.append("kilos", formData.kilos);
-        formDataToSend.append("height", formData.height);
-        formDataToSend.append("gender", formData.gender);
+      formDataToSend.append("first_name", formData.first_name);
+      formDataToSend.append("last_name", formData.last_name);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("password", formData.password);
+      formDataToSend.append("birthdate", formData.birthdate);
+      formDataToSend.append("kilos", formData.kilos);
+      formDataToSend.append("height", formData.height);
+      formDataToSend.append("gender", formData.gender);
 
-        const response = await fetch("https://grown-evidently-chimp.ngrok-free.app/api/register", {
-            method: "POST",
-            body: formDataToSend, // Send as FormData instead of JSON
-        });
+      const response = await fetch("https://grown-evidently-chimp.ngrok-free.app/api/register", {
+        method: "POST",
+        body: formDataToSend, 
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (!response.ok) {
-            setMessage(result.message || "Registration failed");
-            return;
-        }
+      if (!response.ok) {
+        setMessage(result.message || "Registration failed");
+        return;
+      }
 
-        if (result.token) {
-            localStorage.setItem("jwt_token", result.token);
-        }
+      if (result.token) {
+        localStorage.setItem("jwt_token", result.token);
+      }
 
-        setMessage(result.message || "Registration complete");
-        window.location.href = "/home";
+      setMessage(result.message || "Registration complete");
+      window.location.href = "/home";
     } catch (error) {
-        setMessage("Error connecting to the server.");
+      setMessage("Error connecting to the server.");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
-
-  const handleImageUpload = (imageUrl: string) => {
-    setProfileImage(imageUrl);
-    updateFormData("profileImage", imageUrl); // Store the photo URL in form data
-    console.log("Captured image URL:", imageUrl);
+  const handleImageUpload = () => {
+    // Placeholder for image capture logic
+    console.log("Open Camera or File Picker");
   };
 
   return (
@@ -109,13 +105,14 @@ const SecondStage: React.FC<SecondStageProps> = ({
       <IonContent className="register-content">
         <IonGrid className="ion-justify-content-center ion-align-items-center">
           <IonRow className="ion-justify-content-center ion-align-items-center">
-            <IonCol size="1" className="ion-align-self-center">
-              <IonButton onClick={handleBack} fill="clear" disabled={loading}>
-                <IonIcon icon={arrowBackCircle} slot="icon-only" color="black" />
-              </IonButton>
-            </IonCol>
             <IonCol size="12" sizeMd="6" sizeLg="4">
               <div className="form-box">
+                <IonCol size="1" className="ion-align-self-center">
+                  <IonButton onClick={handleBack} fill="clear" disabled={loading}>
+                    BACK
+                  </IonButton>
+                </IonCol>
+
                 <IonItem>
                   <IonInput
                     type="date"
@@ -126,6 +123,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
                     disabled={loading}
                   />
                 </IonItem>
+
                 <IonItem>
                   <IonInput
                     type="number"
@@ -136,6 +134,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
                     disabled={loading}
                   />
                 </IonItem>
+
                 <IonItem>
                   <IonInput
                     type="number"
@@ -146,6 +145,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
                     disabled={loading}
                   />
                 </IonItem>
+
                 <IonItem>
                   <IonSelect
                     value={formData.gender}
@@ -160,13 +160,14 @@ const SecondStage: React.FC<SecondStageProps> = ({
 
                 <div className="photo-upload-container">
                   <h3>Upload Profile Picture</h3>
-                  <PhotoUpload onImageUpload={handleImageUpload} />
+                  <IonButton fill="clear" onClick={handleImageUpload} className="camera-button">
+                    <IonIcon icon={camera} className="camera-icon" />
+                  </IonButton>
                   {profileImage && (
                     <img
                       src={profileImage}
                       alt="Profile Preview"
                       className="profile-image"
-                      style={{ width: 100, height: 100, marginTop: 10, borderRadius: '50%' }}
                     />
                   )}
                 </div>
