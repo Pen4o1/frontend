@@ -6,12 +6,18 @@ import {
   IonButton,
   IonIcon,
   IonToggle,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonImg,
 } from '@ionic/react';
-import { pencil, logOut, list, menuOutline } from 'ionicons/icons';
+import { pencil, logOut, list, menuOutline, addCircle } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import EditProfileModal from '../../components/EditProfileWindow';
 import ShoppingListModal from '../../components/ShoppingListWindow';
 import MealPlanWindow from '../../components/GetMealPlan';
+import PhotoUpload from '../../components/PhotoUpload'; // Import PhotoUpload
 import '../../components/styles/profile-style.css';
 
 const MyProfile: React.FC = () => {
@@ -19,15 +25,14 @@ const MyProfile: React.FC = () => {
   const [userData, setUserData] = useState({
     first_name: '',
     last_name: '',
-    avatar: '',
+    avatar: 'https://ionicframework.com/docs/img/demos/avatar.svg',
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isShoppingListModalOpen, setIsShoppingListModalOpen] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [isMealPlanModalOpen, setIsMealPlanModalOpen] = useState(false); // New state for Meal Plan modal
+  const [isMealPlanModalOpen, setIsMealPlanModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const history = useHistory();
 
-  // Dark theme toggle logic
   const toggleChange = (event: any) => {
     toggleDarkTheme(event.detail.checked);
   };
@@ -44,14 +49,10 @@ const MyProfile: React.FC = () => {
     };
 
     initializeDarkTheme(prefersDark.matches);
+    prefersDark.addEventListener('change', (mediaQuery) => initializeDarkTheme(mediaQuery.matches));
 
-    const setDarkThemeFromMediaQuery = (mediaQuery: MediaQueryListEvent) => {
-      initializeDarkTheme(mediaQuery.matches);
-    };
-
-    prefersDark.addEventListener('change', setDarkThemeFromMediaQuery);
     return () => {
-      prefersDark.removeEventListener('change', setDarkThemeFromMediaQuery);
+      prefersDark.removeEventListener('change', (mediaQuery) => initializeDarkTheme(mediaQuery.matches));
     };
   }, []);
 
@@ -60,6 +61,7 @@ const MyProfile: React.FC = () => {
     window.location.href = '/login';
   };
 
+  // Fetch User Data
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -95,6 +97,50 @@ const MyProfile: React.FC = () => {
     fetchUserData();
   }, []);
 
+  // Handle Upload Click
+  const handleUploadClick = () => {
+    setIsUploadModalOpen(true);
+  };
+
+  const handleImageUpload = async (imageUrl: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+  
+      const file = new File([blob], 'profile_picture.jpg', { type: 'image/jpeg' });
+  
+      const formData = new FormData();
+      formData.append('profile_picture', file);
+  
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+  
+      const uploadResponse = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/upload-profile-picture', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+  
+      const result = await uploadResponse.json();
+  
+      if (uploadResponse.ok) {
+        console.log('Upload success:', result);
+        setUserData({ ...userData, avatar: result.profile_picture_url });
+        setIsUploadModalOpen(false);
+      } else {
+        throw new Error(`Error: ${result.message || 'Upload failed'}`);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
+  
+
   const handleSaveChanges = (updatedData: { first_name: string; last_name: string }) => {
     setUserData({
       ...userData,
@@ -108,9 +154,14 @@ const MyProfile: React.FC = () => {
       <IonContent className="ion-padding profile-content">
         <div className="profile-box">
           <div className="profile-header">
-            <IonAvatar className="profile-avatar">
-              <img alt="User's avatar" src={userData.avatar} />
-            </IonAvatar>
+            <div className="avatar-container">
+              <IonAvatar className="profile-avatar">
+                <img alt="User's avatar" src={userData.avatar} />
+              </IonAvatar>
+              <div className="upload-icon" onClick={handleUploadClick}>
+                <IonIcon icon={addCircle} />
+              </div>
+            </div>
             <h2>{userData.first_name}</h2>
             <p>{userData.last_name}</p>
           </div>
@@ -120,42 +171,22 @@ const MyProfile: React.FC = () => {
               Dark Mode
             </IonToggle>
 
-            <IonButton 
-              expand="block" 
-              color="primary" 
-              className="profile-button" 
-              onClick={() => setIsModalOpen(true)}
-            >
+            <IonButton expand="block" color="primary" className="profile-button" onClick={() => setIsModalOpen(true)}>
               <IonIcon icon={pencil} slot="start" />
               Edit Profile
             </IonButton>
 
-            <IonButton
-              expand="block"
-              color="success"
-              className="profile-button"
-              onClick={() => setIsMealPlanModalOpen(true)}
-            >
-              <IonIcon icon={menuOutline} slot="start"/>
+            <IonButton expand="block" color="success" className="profile-button" onClick={() => setIsMealPlanModalOpen(true)}>
+              <IonIcon icon={menuOutline} slot="start" />
               View Meal Plan
             </IonButton>
 
-            <IonButton
-              expand="block"
-              color="tertiary"
-              className="profile-button"
-              onClick={() => setIsShoppingListModalOpen(true)}
-            >
+            <IonButton expand="block" color="tertiary" className="profile-button" onClick={() => setIsShoppingListModalOpen(true)}>
               <IonIcon icon={list} slot="start" />
               Shopping List
             </IonButton>
-            
-            <IonButton 
-              expand="block" 
-              color="danger" 
-              className="profile-button" 
-              onClick={logout}
-            >
+
+            <IonButton expand="block" color="danger" className="profile-button" onClick={logout}>
               <IonIcon icon={logOut} slot="start" />
               Logout
             </IonButton>
@@ -163,13 +194,24 @@ const MyProfile: React.FC = () => {
         </div>
       </IonContent>
 
-      {/* Edit Profile Modal */}
+      <IonModal isOpen={isUploadModalOpen} onDidDismiss={() => setIsUploadModalOpen(false)}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Upload Profile Picture</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+          <div className="upload-modal-content">
+            <PhotoUpload onImageUpload={handleImageUpload} />
+            <IonButton expand="block" color="medium" onClick={() => setIsUploadModalOpen(false)}>
+              Back
+            </IonButton>
+          </div>
+        </IonContent>
+      </IonModal>
+
       <EditProfileModal isOpen={isModalOpen} onDismiss={() => setIsModalOpen(false)} userData={userData} onSave={handleSaveChanges} />
-
-      {/* Shopping List Modal */}
       <ShoppingListModal isOpen={isShoppingListModalOpen} onDismiss={() => setIsShoppingListModalOpen(false)} />
-
-      {/* Meal Plan Modal */}
       <MealPlanWindow isOpen={isMealPlanModalOpen} onDismiss={() => setIsMealPlanModalOpen(false)} />
     </IonPage>
   );

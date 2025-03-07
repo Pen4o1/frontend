@@ -17,8 +17,9 @@ import {
   IonSelect,
   IonSelectOption,
 } from '@ionic/react';
-import { camera } from 'ionicons/icons'; // Import camera icon
+import { camera } from 'ionicons/icons'; 
 import './styles/register-style.css';
+import PhotoUpload from './PhotoUpload';
 
 interface SecondStageProps {
   formData: {
@@ -90,9 +91,10 @@ const SecondStage: React.FC<SecondStageProps> = ({
     }
   };
 
-  const handleImageUpload = () => {
-    // Placeholder for image capture logic
-    console.log("Open Camera or File Picker");
+  const handleImageUpload = (imageUrl: string) => {
+    setProfileImage(imageUrl);
+    updateFormData("profileImage", imageUrl); // Store the photo URL in form data
+    console.log("Captured image URL:", imageUrl);
   };
 
   return (
@@ -159,18 +161,17 @@ const SecondStage: React.FC<SecondStageProps> = ({
                 </IonItem>
 
                 <div className="photo-upload-container">
-                  <h3>Upload Profile Picture</h3>
-                  <IonButton fill="clear" onClick={handleImageUpload} className="camera-button">
-                    <IonIcon icon={camera} className="camera-icon" />
-                  </IonButton>
-                  {profileImage && (
-                    <img
-                      src={profileImage}
-                      alt="Profile Preview"
-                      className="profile-image"
-                    />
-                  )}
-                </div>
+                <h3>Upload Profile Picture</h3>
+                <PhotoUpload onImageUpload={handleImageUpload} /> 
+                {profileImage && (
+                  <img
+                    src={profileImage}
+                    alt="Profile Preview"
+                    className="profile-image"
+                  />
+                )}
+              </div>
+
 
                 <IonButton expand="block" onClick={handleCompleteRegistration} disabled={loading}>
                   {loading ? 'Submitting...' : 'Complete Registration'}
