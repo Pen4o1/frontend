@@ -15,7 +15,8 @@ const MacrosChart: React.FC = () => {
   ]);
   const [selectedSegment, setSelectedSegment] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Loader state
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const history = useHistory();
 
   const fetchData = async () => {
@@ -76,8 +77,11 @@ const MacrosChart: React.FC = () => {
 
   // useIonViewWillEnter runs every time the view is entered
   useIonViewWillEnter(() => {
-    console.log('MacrosChart: Fetching data on page entry');
-    fetchData();
+    if(!hasFetched) {
+      console.log('MacrosChart: Fetching data on page entry');
+      fetchData();
+      setHasFetched(true);
+    }
   });
 
   // Allow handling clicks on chart segments

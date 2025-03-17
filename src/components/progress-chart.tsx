@@ -8,13 +8,14 @@ import {
 import './styles/home.css';
 import { useHistory } from 'react-router-dom';
 import { IonSpinner } from '@ionic/react';
-import { useIonViewWillEnter } from '@ionic/react'; // Importing Ionic lifecycle hook
+import { useIonViewWillEnter } from '@ionic/react';
 
 const ProgressChart: React.FC = () => {
   const [dailyCalories, setDailyCalories] = useState<number>(0);
   const [targetCalories, setTargetCalories] = useState<number>(0);
   const [warning, setWarning] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Loader state
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const history = useHistory();
 
   const fetchData = async () => {
@@ -70,8 +71,11 @@ const ProgressChart: React.FC = () => {
 
   // useIonViewWillEnter runs every time the view is entered
   useIonViewWillEnter(() => {
-    console.log('ProgressChart: Fetching data on page entry');
-    fetchData();
+    if(!hasFetched){
+      console.log('ProgressChart: Fetching data on page entry');
+      fetchData();
+      setHasFetched(true);
+    }
   });
 
   const progressPercentage = targetCalories
