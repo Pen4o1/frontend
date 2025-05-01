@@ -4,7 +4,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 interface BarcodeScannerComponentProps {
   setBarcode: (barcode: string) => void;
-  setFoodDetails: (foodDetails: any) => void;
+  /* to make an interface for this*/setFoodDetails: (foodDetails: any) => void;
   setShowBarcodeModal: (show: boolean) => void;
 }
 

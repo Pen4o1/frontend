@@ -27,13 +27,13 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 const AddFood: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
-  const [fetchedItems, setFetchedItems] = useState<any[]>([]);
-  const [selectedItems, setSelectedItems] = useState<any[]>([]);
+  /*to make an interface for this*/const [fetchedItems, setFetchedItems] = useState<any[]>([]);
+  /*to make an interface for this*/const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [barcode, setBarcode] = useState<string | null>(null);
-  const [foodDetails, setFoodDetails] = useState<any | null>(null);
+  /*to make an interface for this*/const [foodDetails, setFoodDetails] = useState<any | null>(null);
   const [showBarcodeModal, setShowBarcodeModal] = useState(false);
 
   const fetchItems = async () => {
@@ -60,7 +60,7 @@ const AddFood: React.FC = () => {
       if (foods.length === 0) {
         setErrorMessage('No items found for your query.');
       } else {
-        const formattedItems = foods.map((food: any) => ({
+      /*to make an interface for this*/  const formattedItems = foods.map((food: any) => ({
           id: food.food_id,
           name: food.food_name,
           calories: parseInt(food.servings?.serving[0]?.calories, 10) || 0,
@@ -95,7 +95,7 @@ const AddFood: React.FC = () => {
     );
   };
 
-  const toggleSelection = (item: any) => {
+  /*to make an interface for this*/const toggleSelection = (item: any) => {
     const isSelected = selectedItems.some((selected) => selected.id === item.id);
     if (isSelected) {
       setSelectedItems((prev) =>
@@ -107,7 +107,7 @@ const AddFood: React.FC = () => {
     }
   };
 
-  const saveFoodToDailyCalories = async (payload: any) => {
+  /*to make an interface for this*/const saveFoodToDailyCalories = async (payload: any) => {
     try {
       const token = localStorage.getItem('jwt_token');
 

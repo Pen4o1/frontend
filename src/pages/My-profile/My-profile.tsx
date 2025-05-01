@@ -33,7 +33,7 @@ const MyProfile: React.FC = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const history = useHistory();
 
-  const toggleChange = (event: any) => {
+  /*to make an interface for this*/const toggleChange = (event: any) => {
     toggleDarkTheme(event.detail.checked);
   };
 

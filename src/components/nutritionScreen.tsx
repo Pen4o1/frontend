@@ -44,7 +44,7 @@ type NutritionItem = {
         {nutritionData && nutritionData.length > 0 ? (
           <>
             <IonList>
-              {nutritionData.map((item: any, index: number) => (
+              {/*to make an interface for this*/ nutritionData.map((item: any, index: number) => (
                 <IonItem key={index}>
                   <IonLabel>
                     <h2>{item.name}</h2>

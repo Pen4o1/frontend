@@ -1,7 +1,7 @@
 import React, { useState } from 'react' 
 const FoodSearch: React.FC = () => {
   const [query, setQuery] = useState<string>('')
-  const [results, setResults] = useState<any[]>([])
+  /*to make an interface for this*/const [results, setResults] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 

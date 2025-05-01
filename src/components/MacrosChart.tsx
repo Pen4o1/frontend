@@ -85,7 +85,7 @@ const MacrosChart: React.FC = () => {
   });
 
   // Allow handling clicks on chart segments
-  const handleClick = (data: any, index: number) => {
+  /*to make an interface for this*/const handleClick = (data: any, index: number) => {
     setSelectedSegment(`${data.name}: ${data.value}`);
   };
 
