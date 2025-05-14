@@ -15,6 +15,7 @@ import {
 } from '@ionic/react'
 import { useHistory } from 'react-router-dom';
 
+
 const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   isOpen,
   onClose,
@@ -91,7 +92,7 @@ const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
       </IonContent>
       <IonFooter>
         <IonToolbar>
-          <IonButton expand="full" onClick={handleSave}>
+          <IonButton color="primary" expand="full" onClick={handleSave}>
             Save Goal
           </IonButton>
         </IonToolbar>

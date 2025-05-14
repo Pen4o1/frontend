@@ -21,7 +21,6 @@ import PhotoUpload from '../../components/PhotoUpload'; // Import PhotoUpload
 import '../../components/styles/profile-style.css';
 
 const MyProfile: React.FC = () => {
-  const [themeToggle, setThemeToggle] = useState(false);
   const [userData, setUserData] = useState({
     first_name: '',
     last_name: '',
@@ -32,29 +31,6 @@ const MyProfile: React.FC = () => {
   const [isMealPlanModalOpen, setIsMealPlanModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const history = useHistory();
-
-  /*to make an interface for this*/const toggleChange = (event: any) => {
-    toggleDarkTheme(event.detail.checked);
-  };
-
-  const toggleDarkTheme = (shouldAdd: boolean) => {
-    document.body.classList.toggle('dark', shouldAdd);
-  };
-
-  useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const initializeDarkTheme = (isDark: boolean) => {
-      setThemeToggle(isDark);
-      toggleDarkTheme(isDark);
-    };
-
-    initializeDarkTheme(prefersDark.matches);
-    prefersDark.addEventListener('change', (mediaQuery) => initializeDarkTheme(mediaQuery.matches));
-
-    return () => {
-      prefersDark.removeEventListener('change', (mediaQuery) => initializeDarkTheme(mediaQuery.matches));
-    };
-  }, []);
 
   const logout = () => {
     localStorage.removeItem('jwt_token');
@@ -167,27 +143,23 @@ const MyProfile: React.FC = () => {
           </div>
 
           <div className="profile-buttons">
-            <IonToggle checked={themeToggle} onIonChange={toggleChange}>
-              Dark Mode
-            </IonToggle>
-
             <IonButton expand="block" color="primary" className="profile-button" onClick={() => setIsModalOpen(true)}>
-              <IonIcon icon={pencil} slot="start" />
+              <IonIcon icon={pencil} slot="start" color="dark"/>
               Edit Profile
             </IonButton>
 
             <IonButton expand="block" color="success" className="profile-button" onClick={() => setIsMealPlanModalOpen(true)}>
-              <IonIcon icon={menuOutline} slot="start" />
+              <IonIcon icon={menuOutline} slot="start" color="dark"/>
               View Meal Plan
             </IonButton>
 
             <IonButton expand="block" color="tertiary" className="profile-button" onClick={() => setIsShoppingListModalOpen(true)}>
-              <IonIcon icon={list} slot="start" />
+              <IonIcon icon={list} slot="start" color="dark"/>
               Shopping List
             </IonButton>
 
             <IonButton expand="block" color="danger" className="profile-button" onClick={logout}>
-              <IonIcon icon={logOut} slot="start" />
+              <IonIcon icon={logOut} slot="start" color="dark"/>
               Logout
             </IonButton>
           </div>

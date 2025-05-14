@@ -260,16 +260,19 @@ const AddFood: React.FC = () => {
             <IonCol size="12">
               <Swiper spaceBetween={50} slidesPerView={1} loop={true} pagination={{ clickable: true }}>
                 <SwiperSlide>
-                  <IonItem>
-                    <IonInput
-                      placeholder="Enter a food or recipe"
-                      value={inputValue}
-                      onIonChange={(e) => setInputValue(e.detail.value!)}
-                    />
-                  </IonItem>
-                  <IonButton expand="block" color="primary" onClick={fetchItems} disabled={loading}>
-                    {loading ? 'Fetching...' : 'Find Items'}
-                  </IonButton>
+                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+                    <IonItem>
+                      <IonInput
+                        placeholder="Enter a food or recipe"
+                        value={inputValue}
+                        onIonChange={(e) => setInputValue(e.detail.value!)}
+                      />
+                    </IonItem>
+
+                    <IonButton expand="block" color="primary" onClick={fetchItems} disabled={loading} style={{ marginTop: 'auto' }}>
+                      {loading ? 'Fetching...' : 'Find Items'}
+                    </IonButton>
+                  </div>
                 </SwiperSlide>
 
                 <SwiperSlide>

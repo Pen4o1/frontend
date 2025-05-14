@@ -1,43 +1,46 @@
-/* Ensuring swiper container takes up the full width and height */
-.swiper-container {
-    width: 100%;
-    height: 100%;
-    display: flex; /* Makes sure that the slides appear horizontally */
-  }
-  
-  .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    /* Optional: adjust padding or margins as necessary */
-  }
+/* Scoped Swiper styles */
+.app-wrapper .swiper-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
 
- ion-icon.md{
+.app-wrapper .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Scoped IonIcon */
+.app-wrapper ion-icon.md {
   margin: 0;
- }
+}
 
- .compleated-registration{
+/* Registration text alignment */
+.app-wrapper .compleated-registration {
   text-align: center;
- } 
+}
 
- /* Aligning the settings button to the left */
-.custom-tab-bar {
+/* Custom Tab Bar */
+.app-wrapper .custom-tab-bar {
   display: flex;
   justify-content: flex-start;
   padding-right: 10px;
 }
 
-.icon-button {
+/* Icon Button */
+.app-wrapper .icon-button {
   --padding-start: 0;
   --padding-end: 0;
   --border-radius: 50%;
   --background: transparent;
-  --ion-button-color: #000; 
+  --ion-button-color: #000;
 }
 
-.clear-button {
+/* Clear Button */
+.app-wrapper .clear-button {
   --ion-button-border-width: 0;
   --ion-button-background: transparent;
-  --ion-button-color: #000; /* Optional: change the color to fit your theme */
+  --ion-button-color: #000;
 }

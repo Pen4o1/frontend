@@ -30,6 +30,7 @@ import VerificationCodeModal from './components/VerificationCodeWindow';
 import ValidateToken from './components/ValidateToken';
 import SettingsWindow from './components/SettingsWindow';
 import UploadImage from './pages/My-profile/Upload'
+import ColorPalettePreview from './pages/color-test/ColorPalettePreview';
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { setupIonicReact } from '@ionic/react';
@@ -138,7 +139,7 @@ const App: React.FC = () => {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
       <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn, isCompleated, setIsCompleated }}>
-        <IonApp>
+        <IonApp className="app-wrapper">
           <IonReactRouter>
             <ValidateToken 
               onValidation={handleValidation} 
@@ -184,20 +185,21 @@ const App: React.FC = () => {
                 <Route exact path="/test4">
                   <UploadImage />
                 </Route>
+                <Route path="/colors" component={ColorPalettePreview} exact />
               </IonRouterOutlet>
 
               {isLoggedIn && (
                 <IonTabBar slot="bottom">
                   <IonTabButton tab="home" href="/home">
-                    <IonIcon icon={home} />
+                    <IonIcon icon={home} color="primary"/>
                     <IonLabel>Home</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab="add-food" href="/add-food">
-                    <IonIcon icon={add} />
+                    <IonIcon icon={add} color="primary"/>
                     <IonLabel>Add Food</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab="my-profile" href="/my-profile">
-                    <IonIcon icon={person} />
+                    <IonIcon icon={person} color="primary"/>
                     <IonLabel>Profile</IonLabel>
                   </IonTabButton>
                 </IonTabBar>
@@ -206,14 +208,14 @@ const App: React.FC = () => {
               {isLoggedIn && isCompleated && (
                 <IonTabBar slot="top">
                   <IonTabButton tab="Set Goal" onClick={() => setShowGoalWindow(true)}>
-                    <IonButton>Set Goal</IonButton>
+                    <IonButton color="secondary" expand="full" >Set Goal</IonButton>
                   </IonTabButton>
                   <IonTabButton tab="Set Meal Plan" onClick={() => setShowMealWindow(true)}>
-                    <IonButton>Set Meal Plan</IonButton>
+                    <IonButton color="secondary" expand="full" >Set Meal Plan</IonButton>
                   </IonTabButton>
                   <IonTabButton tab="Settings" onClick={() => setIsSettingsModalOpen(true)}>
                     <IonButton fill="clear" className="icon-button">
-                      <IonIcon icon={settings} slot="start" />
+                      <IonIcon icon={settings} slot="start" color="secondary"/>
                     </IonButton>
                   </IonTabButton>
                 </IonTabBar>
@@ -222,7 +224,7 @@ const App: React.FC = () => {
               {isLoggedIn && !isCompleated && (
                 <IonTabBar slot="top">
                   <IonTabButton tab="Complete registration" href="/complete-registaration">
-                    <IonButton>Complete registration</IonButton>
+                    <IonButton color="primary" expand="full">Complete registration</IonButton>
                   </IonTabButton>
                 </IonTabBar>
               )}

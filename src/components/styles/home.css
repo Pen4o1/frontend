@@ -8,19 +8,15 @@
     align-items: center;
     height: 300px; 
     width: 100%;
-    background-color: #f0f0f0;
-    border: 2px solid #007bff; 
+    background-color: #FAF6E9; /* Light beige background */
+    border: 2px solid #A0C878; /* Olive green border */
     border-radius: 10px; 
 }
 
 .swiper-slide h2 {
     margin: 0;
     text-align: center;
-}
-
-.macros-chart {
-    width: 100%;
-    height: 400px; 
+    color: #333; /* Dark readable text */
 }
 
 .macros-chart {
@@ -28,23 +24,29 @@
     height: 400px;
     margin: 20px auto;
     text-align: center;
-  }
-  
-  .error-message {
+    background-color: #FFFDF6; /* Cream background for charts */
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.error-message {
     color: red;
     font-weight: bold;
-  }
-  
-  .selected-segment-info {
+}
+
+.selected-segment-info {
     margin-top: 10px;
-  }
-  
-  .progress-label {
+    color: #333;
+}
+
+.progress-label {
     font-size: 20px;
     font-weight: bold;
-  }
-  
-  .calories-label {
+    color: #A0C878; /* Olive green for progress emphasis */
+}
+
+.calories-label {
     font-size: 14px;
     font-weight: normal;
-  }  
+    color: #666; /* Subtle text */
+}
