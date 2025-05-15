@@ -216,7 +216,6 @@ const AddFood: React.FC = () => {
     }
 
     try {
-      // Change the fetch based on server requirements
       const response = await fetch(
         `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode`,
         {
@@ -224,7 +223,7 @@ const AddFood: React.FC = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(payload), // Pass barcode in the body
+          body: JSON.stringify(payload),
         }
       );
   
@@ -260,7 +259,7 @@ const AddFood: React.FC = () => {
             <IonCol size="12">
               <Swiper spaceBetween={50} slidesPerView={1} loop={true} pagination={{ clickable: true }}>
                 <SwiperSlide>
-                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+                  <div className="swiper-button">
                     <IonItem>
                       <IonInput
                         placeholder="Enter a food or recipe"
@@ -269,30 +268,34 @@ const AddFood: React.FC = () => {
                       />
                     </IonItem>
 
-                    <IonButton expand="block" color="primary" onClick={fetchItems} disabled={loading} style={{ marginTop: 'auto' }}>
+                    <IonButton expand="block" color="primary" onClick={fetchItems} disabled={loading}>
                       {loading ? 'Fetching...' : 'Find Items'}
                     </IonButton>
                   </div>
                 </SwiperSlide>
 
                 <SwiperSlide>
-                  <IonButton expand="block" color="primary" onClick={scanBarcode}>
-                    Scan Barcode
-                  </IonButton>
-                  {barcode && <IonText>Scanned Barcode: {barcode}</IonText>}
+                  <div className="swiper-button">
+                    <IonButton expand="block" color="primary" onClick={scanBarcode}>
+                      Scan Barcode
+                    </IonButton>
+                    {barcode && <IonText>Scanned Barcode: {barcode}</IonText>}
+                  </div>
                 </SwiperSlide>
 
                 <SwiperSlide>
-                  <IonItem>
-                    <IonInput
-                      placeholder="Enter a barcode manually"
-                      value={barcode || ''}
-                      onIonChange={(e) => setBarcode(e.detail.value!)}
-                    />
-                  </IonItem>
-                  <IonButton expand="block" color="primary" onClick={manulaInputBarcode} disabled={loading}>
-                    {loading ? 'Fetching...' : 'Find Items'}
-                  </IonButton>
+                  <div className="swiper-button">
+                    <IonItem>
+                      <IonInput
+                        placeholder="Enter a barcode manually"
+                        value={barcode || ''}
+                        onIonChange={(e) => setBarcode(e.detail.value!)}
+                      />
+                    </IonItem>
+                    <IonButton expand="block" color="primary" onClick={manulaInputBarcode} disabled={loading}>
+                      {loading ? 'Fetching...' : 'Find Items'}
+                    </IonButton>
+                  </div>
                 </SwiperSlide>
               </Swiper>
             </IonCol>
