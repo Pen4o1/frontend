@@ -44,3 +44,7 @@
   --ion-button-background: transparent;
   --ion-button-color: #000;
 }
+
+.tab-button {
+  border-radius: 25px;
+}

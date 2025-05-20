@@ -160,7 +160,7 @@ const SecondStage: React.FC<SecondStageProps> = ({
                   </IonSelect>
                 </IonItem>
 
-                <div className="photo-upload-container">
+                <div color="primary" className="photo-upload-container">
                 <h3>Upload Profile Picture</h3>
                 <PhotoUpload onImageUpload={handleImageUpload} /> 
                 {profileImage && (

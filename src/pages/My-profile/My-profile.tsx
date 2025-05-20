@@ -73,7 +73,6 @@ const MyProfile: React.FC = () => {
     fetchUserData();
   }, []);
 
-  // Handle Upload Click
   const handleUploadClick = () => {
     setIsUploadModalOpen(true);
   };
@@ -135,7 +134,7 @@ const MyProfile: React.FC = () => {
                 <img alt="User's avatar" src={userData.avatar} />
               </IonAvatar>
               <div className="upload-icon" onClick={handleUploadClick}>
-                <IonIcon icon={addCircle} />
+                <IonIcon icon={addCircle} color="primary"/>
               </div>
             </div>
             <h2>{userData.first_name}</h2>

@@ -1,7 +1,3 @@
-ion-app {
-  background-color: var(--ion-background-color); /* or any custom color */
-}
-
 :root {
   /* New Color Palette */
   --color-cream: #FFFDF6;

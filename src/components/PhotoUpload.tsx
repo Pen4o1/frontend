@@ -16,14 +16,14 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({ onImageUpload }) => {
                 quality: 90,
                 allowEditing: false,
                 resultType: CameraResultType.Uri,
-                source: CameraSource.Camera, // Use CameraSource.Photos for gallery selection
+                source: CameraSource.Camera, 
             });
 
             const imageUrl = image.webPath || null;
             setPhoto(imageUrl);
 
             if (imageUrl) {
-                onImageUpload(imageUrl); // Pass image URL to parent component
+                onImageUpload(imageUrl);
             }
         } catch (error) {
             console.error("Camera error:", error);

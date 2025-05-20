@@ -208,7 +208,7 @@ const App: React.FC = () => {
               {isLoggedIn && isCompleated && (
                 <IonTabBar slot="top">
                   <IonTabButton tab="Set Goal" onClick={() => setShowGoalWindow(true)}>
-                    <IonButton color="secondary" expand="full" >Set Goal</IonButton>
+                    <IonButton color="secondary" expand="full">Set Goal</IonButton>
                   </IonTabButton>
                   <IonTabButton tab="Set Meal Plan" onClick={() => setShowMealWindow(true)}>
                     <IonButton color="secondary" expand="full" >Set Meal Plan</IonButton>
