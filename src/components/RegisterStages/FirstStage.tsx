@@ -16,9 +16,9 @@ import {
   IonLoading,
 } from '@ionic/react'
 import { eye, eyeOff } from 'ionicons/icons'
-import GoogleLogin from './GoogleLogin'
-import '../components/styles/login-style.css'
-import '../components/styles/register-style.css'
+import GoogleLogin from '../GoogleLogin'
+import '../styles/login-style.css'
+import '../styles/register-style.css'
 
 interface FirstStageProps {
   handleSubmit: () => void

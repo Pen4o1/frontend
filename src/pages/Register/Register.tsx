@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import FirstStage from '../../components/FirstStage'
-import SecondStage from '../../components/SecondStage'
+import FirstStage from '../../components/RegisterStages/FirstStage'
+import SecondStage from '../../components/RegisterStages/SecondStage'
 
 const RegisterForm: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false)

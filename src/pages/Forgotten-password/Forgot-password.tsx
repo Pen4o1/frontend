@@ -10,7 +10,10 @@ import {
   IonItem, 
   IonLabel, 
   IonText,
-  IonLoading
+  IonLoading,
+  IonGrid,
+  IonRow,
+  IonCol
 } from '@ionic/react';
 import '../../components/styles/login-style.css'; 
 import ResetPasswordWindow from '../../components/ResetPasswordWindow';
@@ -107,36 +110,48 @@ const ForgotPassword: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent className="ion-padding login-content">
-        <IonText className='ion-padding login-item'>
-          <h3>Enter your email to reset password</h3>
-        </IonText>
+      <IonContent className="login-content">
+        <IonGrid className="ion-justify-content-center ion-align-items-center">
+          <IonRow className="ion-justify-content-center ion-align-items-center">
+            <IonCol size="12" sizeMd="6" sizeLg="4">
+              <div className="form-box">
+                <IonText className="ion-padding login-item">
+                  <h3>Enter your email to reset password</h3>
+                </IonText>
 
-        <IonItem className="input-box">
-          <IonLabel position="stacked">Email</IonLabel>
-          <IonInput
-            type="email"
-            value={email}
-            onIonChange={(e) => setEmail(e.detail.value!)}
-            placeholder="Enter your registered email"
-            required
-          />
-        </IonItem>
+                <IonItem className="input-box">
+                  <IonLabel position="stacked">Email</IonLabel>
+                  <IonInput
+                    type="email"
+                    value={email}
+                    onIonChange={(e) => setEmail(e.detail.value!)}
+                    placeholder="Enter your registered email"
+                    required
+                  />
+                </IonItem>
 
-        {errorMessage && (
-          <IonText color="danger" className="ion-padding">
-            <p>{errorMessage}</p>
-          </IonText>
-        )}
+                {errorMessage && (
+                  <IonText color="danger" className="ion-padding">
+                    <p>{errorMessage}</p>
+                  </IonText>
+                )}
 
-        <IonButton
-          expand="block"
-          onClick={handleSendCode}
-          disabled={loading}
-          className="ion-margin-top"
-        >
-          Send Verification Code
-        </IonButton>
+                <IonButton
+                  expand="block"
+                  onClick={handleSendCode}
+                  disabled={loading}
+                  className="ion-margin-top"
+                >
+                  Send Verification Code
+                </IonButton>
+
+                <p className="sign-up-text">
+                  Go back to login? <a href="/login" className="sign-up-link">Sign In</a>
+                </p>
+              </div>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
 
         <ResetPasswordWindow
           isOpen={showVerificationModal}

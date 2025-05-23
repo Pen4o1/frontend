@@ -18,8 +18,8 @@ import {
   IonSelectOption,
 } from '@ionic/react';
 import { camera } from 'ionicons/icons'; 
-import './styles/register-style.css';
-import PhotoUpload from './PhotoUpload';
+import '../styles/register-style.css';
+import PhotoUpload from '../PhotoUpload';
 
 interface SecondStageProps {
   formData: {
