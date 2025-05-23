@@ -24,6 +24,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '../../components/styles/add-food-style.css';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import config from '../../config';
 
 const AddFood: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
@@ -46,10 +47,10 @@ const AddFood: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch(
-        `https://grown-evidently-chimp.ngrok-free.app/api/foods/search?query=${encodeURIComponent(inputValue)}`,
-        { method: 'GET' }
-      );
+      const response = await fetch(`${config.BASE_URL}/api/foods/search?query=${encodeURIComponent(inputValue)}`, { 
+            method: 'GET' 
+          }
+        );
 
       if (!response.ok) {
         throw new Error('Failed to fetch items.');
@@ -111,9 +112,7 @@ const AddFood: React.FC = () => {
     try {
       const token = localStorage.getItem('jwt_token');
 
-      const response = await fetch(
-        'https://grown-evidently-chimp.ngrok-free.app/api/save/daily/macros',
-        {
+      const response = await fetch(`${config.BASE_URL}/api/save/daily/macros`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -179,9 +178,7 @@ const AddFood: React.FC = () => {
         setBarcode(data.text);
         const payload = { barcode: data.text };
 
-        const response = await fetch(
-          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode`,
-          {
+        const response = await fetch(`${config.BASE_URL}/api/foods/barcode`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -216,9 +213,7 @@ const AddFood: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode`,
-        {
+      const response = await fetch(`${config.BASE_URL}/api/foods/barcode`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

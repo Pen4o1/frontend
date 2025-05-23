@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IonButton } from '@ionic/react';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import config from '../config';
 
 interface BarcodeScannerComponentProps {
   setBarcode: (barcode: string) => void;
@@ -22,9 +23,7 @@ const BarcodeScannerComponent: React.FC<BarcodeScannerComponentProps> = ({ setBa
 
         const payload = { barcode: data.text };
 
-        const response = await fetch(
-          `https://grown-evidently-chimp.ngrok-free.app/api/foods/barcode`,
-          {
+        const response = await fetch(`${config.BASE_URL}/api/foods/barcode`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

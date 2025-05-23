@@ -17,8 +17,9 @@ import { useHistory } from 'react-router-dom';
 import EditProfileModal from '../../components/EditProfileWindow';
 import ShoppingListModal from '../../components/ShoppingListWindow';
 import MealPlanWindow from '../../components/GetMealPlan';
-import PhotoUpload from '../../components/PhotoUpload'; // Import PhotoUpload
+import PhotoUpload from '../../components/PhotoUpload';
 import '../../components/styles/profile-style.css';
+import config from '../../config';
 
 const MyProfile: React.FC = () => {
   const [userData, setUserData] = useState({
@@ -46,7 +47,7 @@ const MyProfile: React.FC = () => {
           history.push('/login');
           return;
         }
-        const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/user/profile', {
+        const response = await fetch(`${config.BASE_URL}/api/user/profile`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +94,7 @@ const MyProfile: React.FC = () => {
         return;
       }
   
-      const uploadResponse = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/upload-profile-picture', {
+      const uploadResponse = await fetch(`${config.BASE_URL}/api/upload-profile-picture`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

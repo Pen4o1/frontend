@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PhotoUpload from "../../components/PhotoUpload";
+import config from "../../config";
 
 const ImageUp: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -25,7 +26,7 @@ const ImageUp: React.FC = () => {
         return;
       }
 
-      const response = await fetch("https://grown-evidently-chimp.ngrok-free.app/api/upload-profile-picture", {
+      const response = await fetch(`${config.BASE_URL}/api/upload-profile-picture`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

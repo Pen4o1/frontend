@@ -17,6 +17,7 @@ import {
 } from '@ionic/react';
 import '../../components/styles/login-style.css'; 
 import ResetPasswordWindow from '../../components/ResetPasswordWindow';
+import config from '../../config';
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -32,7 +33,7 @@ const ForgotPassword: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/password/reset/send/code', {
+      const response = await fetch(`${config.BASE_URL}/api/password/reset/send/code`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +74,7 @@ const ForgotPassword: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/password/reset', {
+      const response = await fetch(`${config.BASE_URL}/api/password/reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

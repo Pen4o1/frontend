@@ -13,8 +13,6 @@ import {
 } from '@ionic/react';
 import { useLocation, useHistory } from 'react-router-dom';
 
-
-
 type NutritionItem = {
     name: string;
     calories: number;

@@ -15,6 +15,7 @@ import {
   IonText
 } from '@ionic/react';
 import '../components/styles/shoppping-list-style.css'
+import config from '../config';
 
 interface ShoppingListModalProps {
   isOpen: boolean;
@@ -43,7 +44,7 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
     const token = localStorage.getItem('jwt_token');
     try {
       setIsLoading(true);
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/get/shopping/list', {
+      const response = await fetch(`${config.BASE_URL}/api/get/shopping/list`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
     const payload = { id: itemId, bought: !currentStatus };
 
     try {
-      const response = await fetch(`https://grown-evidently-chimp.ngrok-free.app/api/update/shopping/item`, {
+      const response = await fetch(`${config.BASE_URL}/api/update/shopping/item`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
   const clearBoughtItems = async () => {
     const token = localStorage.getItem('jwt_token');
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/clear/bought/items', {
+      const response = await fetch(`${config.BASE_URL}/api/clear/bought/items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

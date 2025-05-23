@@ -13,6 +13,7 @@ import {
   IonAccordionGroup,
   IonFooter,
 } from '@ionic/react';
+import config from '../config';
 
 interface MealPlanPopupProps {
   isOpen: boolean;
@@ -49,9 +50,7 @@ const MealPlanPopup: React.FC<MealPlanPopupProps> = ({ isOpen, onDismiss }) => {
     try {
       setIsLoading(true);
       setErrorMessage(null);
-      const response = await fetch(
-        'https://grown-evidently-chimp.ngrok-free.app/api/get/meal/plan',
-        {
+      const response = await fetch(`${config.BASE_URL}/api/get/meal/plan`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

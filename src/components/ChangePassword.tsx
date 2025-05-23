@@ -10,6 +10,7 @@ import {
   IonIcon
 } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
+import config from '../config';
 
 
 interface PasswordChangeModalProps {
@@ -50,7 +51,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
     setLoading(true);
     try {
       const token = localStorage.getItem('jwt_token');
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/change/password', {
+      const response = await fetch(`${config.BASE_URL}/api/change/password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

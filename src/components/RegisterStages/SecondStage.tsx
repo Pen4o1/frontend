@@ -20,6 +20,7 @@ import {
 import { camera } from 'ionicons/icons'; 
 import '../styles/register-style.css';
 import PhotoUpload from '../PhotoUpload';
+import config from '../../config';
 
 interface SecondStageProps {
   formData: {
@@ -66,8 +67,8 @@ const SecondStage: React.FC<SecondStageProps> = ({
       formDataToSend.append("height", formData.height);
       formDataToSend.append("gender", formData.gender);
 
-      const response = await fetch("https://grown-evidently-chimp.ngrok-free.app/api/register", {
-        method: "POST",
+      const response = await fetch(`${config.BASE_URL}/api/register`, {
+        method: 'POST',
         body: formDataToSend, 
       });
 

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import config from '../config';
 
 interface ValidateTokenProps {
   onValidation: (isValid: boolean, isComplete: boolean, email: string, emailVerified: boolean, isGoogle: boolean) => void;
@@ -18,7 +19,7 @@ const ValidateToken: React.FC<ValidateTokenProps> = ({ onValidation, onVerificat
           return;
         }
 
-        const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/validate/token', {
+        const response = await fetch(`${config.BASE_URL}/api/validate/token`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import '../../components/styles/home.css';
 import MacrosChart from '../../components/MacrosChart';
-import ProgressChart from '../../components/progress-chart';
+import ProgressChart from '../../components/ProgressChart';
 
 const Home: React.FC = () => {
   const [message, setMessage] = useState('');

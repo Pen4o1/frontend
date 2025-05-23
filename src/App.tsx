@@ -19,7 +19,7 @@ import Register from './pages/Register/Register';
 import ForgotPassword from './pages/Forgotten-password/Forgot-password';
 import MyProfile from './pages/My-profile/My-profile';
 import AddFood from './pages/Add-food/Add-food';
-import NutritionInfo from './components/nutritionScreen';
+import NutritionInfo from './components/NutritionScreen';
 import CompleteRegistration from './pages/Complete-registration/Complete-registaration';
 import SetGoalWindow from './components/SetGoalWindow';
 import TestCal from './pages/Add-food/Test-add-foods';
@@ -34,6 +34,7 @@ import ColorPalettePreview from './pages/color-test/ColorPalettePreview';
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { setupIonicReact } from '@ionic/react';
+import config from './config';
 import './components/styles/app-style.css';
 
 import '@ionic/react/css/core.css';
@@ -86,7 +87,7 @@ const App: React.FC = () => {
   const handleVerificationRequired = async (token: string, email: string) => {
     try {
       setLoading(true);
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/send/verification/code', {
+      const response = await fetch(`${config.BASE_URL}/api/send/verification/code`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ const App: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/verify/email', {
+      const response = await fetch(`${config.BASE_URL}/api/verify/email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,13 +191,13 @@ const App: React.FC = () => {
 
               {isLoggedIn && (
                 <IonTabBar slot="bottom">
-                  <IonTabButton tab="home" href="/home">
-                    <IonIcon icon={home} color="primary"/>
-                    <IonLabel>Home</IonLabel>
-                  </IonTabButton>
                   <IonTabButton tab="add-food" href="/add-food">
                     <IonIcon icon={add} color="primary"/>
                     <IonLabel>Add Food</IonLabel>
+                  </IonTabButton>
+                  <IonTabButton tab="home" href="/home">
+                    <IonIcon icon={home} color="primary"/>
+                    <IonLabel>Home</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab="my-profile" href="/my-profile">
                     <IonIcon icon={person} color="primary"/>

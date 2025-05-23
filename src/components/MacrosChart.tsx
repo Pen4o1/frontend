@@ -3,7 +3,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import './styles/home.css';
 import { useHistory } from 'react-router-dom';
 import { IonSpinner } from '@ionic/react';
-import { useIonViewWillEnter } from '@ionic/react'; // Importing Ionic lifecycle hook
+import { useIonViewWillEnter } from '@ionic/react';
+import config from '../config';
 
 const COLORS = ['#FFBB28', '#0088FE', '#00C49F'];
 
@@ -28,9 +29,7 @@ const MacrosChart: React.FC = () => {
         return;
       }
 
-      const response = await fetch(
-        'https://grown-evidently-chimp.ngrok-free.app/api/get/daily/macros',
-        {
+      const response = await fetch(`${config.BASE_URL}/api/get/daily/macros`, {
           method: 'GET',
           credentials: 'include',
           headers: {

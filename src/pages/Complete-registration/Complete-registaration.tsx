@@ -18,6 +18,7 @@ import {
   IonSelectOption,
 } from '@ionic/react'
 import '../../components/styles/login-style.css'
+import config from '../../config'
 
 const Profile: React.FC = () => {
   const [birthdate, setBirthdate] = useState('')
@@ -40,9 +41,7 @@ const Profile: React.FC = () => {
         return;
       }
         setLoading(true)
-        const response = await fetch(
-          'https://grown-evidently-chimp.ngrok-free.app/api/profile/status',
-          {
+        const response = await fetch(`${config.BASE_URL}/api/profile/status`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -102,7 +101,7 @@ const Profile: React.FC = () => {
         return;
       }
     
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/update/profile', {
+      const response = await fetch(`${config.BASE_URL}/api/update/profile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

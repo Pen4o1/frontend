@@ -9,6 +9,7 @@ import './styles/home.css';
 import { useHistory } from 'react-router-dom';
 import { IonSpinner } from '@ionic/react';
 import { useIonViewWillEnter } from '@ionic/react';
+import config from '../config';
 
 const ProgressChart: React.FC = () => {
   const [dailyCalories, setDailyCalories] = useState<number>(0);
@@ -19,7 +20,7 @@ const ProgressChart: React.FC = () => {
   const history = useHistory();
 
   const fetchData = async () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       const token = localStorage.getItem('jwt_token');
       if (!token) {
@@ -27,9 +28,7 @@ const ProgressChart: React.FC = () => {
         return;
       }
 
-      const response = await fetch(
-        'https://grown-evidently-chimp.ngrok-free.app/api/get/daily/macros',
-        {
+      const response = await fetch( `${config.BASE_URL}/api/get/daily/macros`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -90,7 +89,7 @@ const ProgressChart: React.FC = () => {
     <div className="macros-chart">
       {loading ? (
         <div className="loader">
-          <IonSpinner name="crescent" /> {/* Ionic Spinner */}
+          <IonSpinner name="crescent" />
         </div>
       ) : (
         <>

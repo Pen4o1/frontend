@@ -5,6 +5,7 @@ import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { UserContext } from '../App';
 import { useHistory } from 'react-router-dom';
 import { getPlatform } from '../utils/platform';
+import config from '../config';
 import '../components/styles/google-login-style.css'
 
 const GoogleLogin: React.FC = () => {
@@ -49,7 +50,7 @@ const GoogleLogin: React.FC = () => {
         throw new Error('No ID token received');
       }
 
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/web/google-login', {
+      const response = await fetch(`${config.BASE_URL}/api/web/google-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

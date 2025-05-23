@@ -16,6 +16,7 @@ import {
   IonAccordionGroup,
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import config from '../config';
 
 type Ingredient = { ingredient: string[] };
 type Nutrition = { calories: string };
@@ -59,9 +60,7 @@ const SetMealPlan: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
         history.push('/login');
         return;
       }
-      const response = await fetch(
-        'https://grown-evidently-chimp.ngrok-free.app/api/generate/meal/plan',
-        {
+      const response = await fetch(`${config.BASE_URL}/api/generate/meal/plan`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

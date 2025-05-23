@@ -14,6 +14,7 @@ import {
   IonInput,
 } from '@ionic/react'
 import { useHistory } from 'react-router-dom';
+import config from '../config';
 
 
 const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
@@ -31,7 +32,7 @@ const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
       }
     const payload = { activityLevel, targetWeight }
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/save/goal', {
+      const response = await fetch(`${config.BASE_URL}/api/save/goal`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

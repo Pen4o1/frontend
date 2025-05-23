@@ -17,6 +17,7 @@ import {
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
+import config from '../config';
 
 interface EditProfileWindowProps {
   isOpen: boolean;
@@ -55,7 +56,7 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
         return;
       }
       setLoading(true);
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/profile/status', {
+      const response = await fetch(`${config.BASE_URL}/api/profile/status`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +130,7 @@ const EditProfileWindow: React.FC<EditProfileWindowProps> = ({ isOpen, onDismiss
         history.push('/login');
         return;
       }
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/update/profile', {
+      const response = await fetch(`${config.BASE_URL}/api/update/profile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

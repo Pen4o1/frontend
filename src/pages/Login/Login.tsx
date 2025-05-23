@@ -20,6 +20,7 @@ import { UserContext } from '../../App';
 import { useHistory } from 'react-router-dom';
 import '../../components/styles/login-style.css';
 import GoogleLogin from '../../components/GoogleLogin';
+import config from '../../config';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -39,7 +40,7 @@ const Login: React.FC = () => {
   const handleLogin = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await fetch('https://grown-evidently-chimp.ngrok-free.app/api/login', {
+      const response = await fetch(`${config.BASE_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
