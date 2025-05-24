@@ -13,23 +13,24 @@ import {
 } from '@ionic/react';
 import { home, add, person, settings } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home-page/Home-page';
+
+import Home from './pages/HomePage/HomePage';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
-import ForgotPassword from './pages/Forgotten-password/Forgot-password';
-import MyProfile from './pages/My-profile/My-profile';
-import AddFood from './pages/Add-food/Add-food';
+import ForgotPassword from './pages/ForgottenPassword/ForgotPassword';
+import MyProfile from './pages/MyProfile/MyProfile';
+import AddFood from './pages/AddFood/AddFood';
 import NutritionInfo from './components/NutritionScreen';
-import CompleteRegistration from './pages/Complete-registration/Complete-registaration';
+import CompleteRegistration from './pages/CompleteRegistration/CompleteRegistaration';
 import SetGoalWindow from './components/SetGoalWindow';
-import TestCal from './pages/Add-food/Test-add-foods';
+import TestCal from './pages/AddFood/Test-add-foods';
 import SetMealPlan from './components/MealPlan';
 import TestBackend from './pages/FoodSearch';
 import TestRecipes from './pages/test_for_recipes';
 import VerificationCodeModal from './components/VerificationCodeWindow';
 import ValidateToken from './components/ValidateToken';
 import SettingsWindow from './components/SettingsWindow';
-import UploadImage from './pages/My-profile/Upload'
+import UploadImage from './pages/MyProfile/Upload';
 import ColorPalettePreview from './pages/color-test/ColorPalettePreview';
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -142,106 +143,114 @@ const App: React.FC = () => {
       <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn, isCompleated, setIsCompleated }}>
         <IonApp className="app-wrapper">
           <IonReactRouter>
-            <ValidateToken 
-              onValidation={handleValidation} 
-              onVerificationRequired={handleVerificationRequired} 
-            />
+            {(() => {
+              const location = useLocation();
 
-            <IonTabs>
-              <IonRouterOutlet>
-                <Route exact path="/">
-                  {isLoggedIn ? <Home /> : <Login />}
-                </Route>
-                <Route exact path="/home">
-                  {isLoggedIn ? <Home /> : <Login />}
-                </Route>
-                <Route exact path="/add-food">
-                  {isLoggedIn ? <AddFood /> : <Login />}
-                </Route>
-                <Route exact path="/my-profile">
-                  {isLoggedIn ? <MyProfile /> : <Login />}
-                </Route>
-                <Route exact path="/login">
-                  {isLoggedIn ? <Home /> : <Login />}
-                </Route>
-                <Route exact path="/register">
-                  {isLoggedIn ? <Home /> : <Register />}
-                </Route>
-                <Route exact path="/forgot-password">
-                  <ForgotPassword />
-                </Route>
-                <Route exact path="/nutrition-info" component={NutritionInfo} />
-                <Route exact path="/complete-registaration">
-                  <CompleteRegistration />
-                </Route>
-                <Route exact path="/test">
-                  <TestCal />
-                </Route>
-                <Route exact path="/test2">
-                  <TestBackend />
-                </Route>
-                <Route exact path="/test3">
-                  <TestRecipes />
-                </Route>
-                <Route exact path="/test4">
-                  <UploadImage />
-                </Route>
-                <Route path="/colors" component={ColorPalettePreview} exact />
-              </IonRouterOutlet>
+              return (
+                <>
+                  <ValidateToken
+                    onValidation={handleValidation}
+                    onVerificationRequired={handleVerificationRequired}
+                  />
 
-              {isLoggedIn && (
-                <IonTabBar slot="bottom">
-                  <IonTabButton tab="add-food" href="/add-food">
-                    <IonIcon icon={add} color="primary"/>
-                    <IonLabel>Add Food</IonLabel>
-                  </IonTabButton>
-                  <IonTabButton tab="home" href="/home">
-                    <IonIcon icon={home} color="primary"/>
-                    <IonLabel>Home</IonLabel>
-                  </IonTabButton>
-                  <IonTabButton tab="my-profile" href="/my-profile">
-                    <IonIcon icon={person} color="primary"/>
-                    <IonLabel>Profile</IonLabel>
-                  </IonTabButton>
-                </IonTabBar>
-              )}
+                  <IonTabs>
+                    <IonRouterOutlet>
+                      <Route exact path="/">
+                        {isLoggedIn ? <Home /> : <Login />}
+                      </Route>
+                      <Route exact path="/home">
+                        {isLoggedIn ? <Home /> : <Login />}
+                      </Route>
+                      <Route exact path="/add-food">
+                        {isLoggedIn ? <AddFood /> : <Login />}
+                      </Route>
+                      <Route exact path="/my-profile">
+                        {isLoggedIn ? <MyProfile /> : <Login />}
+                      </Route>
+                      <Route exact path="/login">
+                        {isLoggedIn ? <Home /> : <Login />}
+                      </Route>
+                      <Route exact path="/register">
+                        {isLoggedIn ? <Home /> : <Register />}
+                      </Route>
+                      <Route exact path="/forgot-password">
+                        <ForgotPassword />
+                      </Route>
+                      <Route exact path="/nutrition-info" component={NutritionInfo} />
+                      <Route exact path="/complete-registaration">
+                        <CompleteRegistration />
+                      </Route>
+                      <Route exact path="/test">
+                        <TestCal />
+                      </Route>
+                      <Route exact path="/test2">
+                        <TestBackend />
+                      </Route>
+                      <Route exact path="/test3">
+                        <TestRecipes />
+                      </Route>
+                      <Route exact path="/test4">
+                        <UploadImage />
+                      </Route>
+                      <Route exact path="/colors" component={ColorPalettePreview} />
+                    </IonRouterOutlet>
 
-              {isLoggedIn && isCompleated && (
-                <IonTabBar slot="top">
-                  <IonTabButton tab="Set Goal" onClick={() => setShowGoalWindow(true)}>
-                    <IonButton color="secondary" expand="full">Set Goal</IonButton>
-                  </IonTabButton>
-                  <IonTabButton tab="Set Meal Plan" onClick={() => setShowMealWindow(true)}>
-                    <IonButton color="secondary" expand="full" >Set Meal Plan</IonButton>
-                  </IonTabButton>
-                  <IonTabButton tab="Settings" onClick={() => setIsSettingsModalOpen(true)}>
-                    <IonButton fill="clear" className="icon-button">
-                      <IonIcon icon={settings} slot="start" color="secondary"/>
-                    </IonButton>
-                  </IonTabButton>
-                </IonTabBar>
-              )}
+                    {isLoggedIn && (
+                      <IonTabBar slot="bottom">
+                        <IonTabButton tab="add-food" href="/add-food" selected={location.pathname === '/add-food'}>
+                          <IonIcon icon={add} color="primary" />
+                          <IonLabel>Add Food</IonLabel>
+                        </IonTabButton>
+                        <IonTabButton tab="home" href="/home" selected={location.pathname === '/home'}>
+                          <IonIcon icon={home} color="primary" />
+                          <IonLabel>Home</IonLabel>
+                        </IonTabButton>
+                        <IonTabButton tab="my-profile" href="/my-profile" selected={location.pathname === '/my-profile'}>
+                          <IonIcon icon={person} color="primary" />
+                          <IonLabel>Profile</IonLabel>
+                        </IonTabButton>
+                      </IonTabBar>
+                    )}
 
-              {isLoggedIn && !isCompleated && (
-                <IonTabBar slot="top">
-                  <IonTabButton tab="Complete registration" href="/complete-registaration">
-                    <IonButton color="primary" expand="full">Complete registration</IonButton>
-                  </IonTabButton>
-                </IonTabBar>
-              )}
-            </IonTabs>
+                    {isLoggedIn && isCompleated && (
+                      <IonTabBar slot="top">
+                        <IonTabButton tab="Set Goal" onClick={() => setShowGoalWindow(true)}>
+                          <IonButton color="secondary" expand="full">Set Goal</IonButton>
+                        </IonTabButton>
+                        <IonTabButton tab="Set Meal Plan" onClick={() => setShowMealWindow(true)}>
+                          <IonButton color="secondary" expand="full">Set Meal Plan</IonButton>
+                        </IonTabButton>
+                        <IonTabButton tab="Settings" onClick={() => setIsSettingsModalOpen(true)}>
+                          <IonButton fill="clear" className="icon-button">
+                            <IonIcon icon={settings} slot="start" color="secondary" />
+                          </IonButton>
+                        </IonTabButton>
+                      </IonTabBar>
+                    )}
 
-            <VerificationCodeModal
-              isOpen={verificationModalOpen}
-              onDismiss={() => setVerificationModalOpen(false)}
-              onVerify={handleVerifyCode}
-            />
+                    {isLoggedIn && !isCompleated && (
+                      <IonTabBar slot="top">
+                        <IonTabButton tab="Complete registration" href="/complete-registaration">
+                          <IonButton color="primary" expand="full">Complete registration</IonButton>
+                        </IonTabButton>
+                      </IonTabBar>
+                    )}
+                  </IonTabs>
 
-            <SetGoalWindow isOpen={showGoalWindow} onClose={() => setShowGoalWindow(false)} />
+                  <VerificationCodeModal
+                    isOpen={verificationModalOpen}
+                    onDismiss={() => setVerificationModalOpen(false)}
+                    onVerify={handleVerifyCode}
+                  />
 
-            <SetMealPlan isOpen={showMealWindow} onClose={() => setShowMealWindow(false)} />
+                  <SetGoalWindow isOpen={showGoalWindow} onClose={() => setShowGoalWindow(false)} />
 
-            <SettingsWindow isOpen={isSettingsModalOpen} onDismiss={() => setIsSettingsModalOpen(false)} />
+                  <SetMealPlan isOpen={showMealWindow} onClose={() => setShowMealWindow(false)} />
+
+                  <SettingsWindow isOpen={isSettingsModalOpen} onDismiss={() => setIsSettingsModalOpen(false)} />
+                </>
+              );
+            })()}
           </IonReactRouter>
 
           <IonLoading isOpen={loading} />
