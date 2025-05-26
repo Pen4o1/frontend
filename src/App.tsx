@@ -1,17 +1,11 @@
 import React, { createContext, useState } from 'react';
-import { Route, useLocation } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import {
   IonApp,
   IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonButton,
-  IonIcon,
-  IonLabel,
   IonTabs,
   IonLoading,
 } from '@ionic/react';
-import { home, add, person, settings } from 'ionicons/icons';
 import { IonReactRouter } from '@ionic/react-router';
 
 import Home from './pages/HomePage/HomePage';
@@ -32,6 +26,10 @@ import ValidateToken from './components/ValidateToken';
 import SettingsWindow from './components/SettingsWindow';
 import UploadImage from './pages/MyProfile/Upload';
 import ColorPalettePreview from './pages/color-test/ColorPalettePreview';
+
+import BottomTabBar from './components/TabBars/BottomTabBar';
+import TopTabBarCompleted from './components/TabBars/TopTabBarCompleted';
+import TopTabBarIncomplete from './components/TabBars/TopTabBarIncomplete';
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { setupIonicReact } from '@ionic/react';
@@ -70,7 +68,6 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [verificationModalOpen, setVerificationModalOpen] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-  // useLocation() must only be used after the <IonReactRouter> is mounted so i need to modify this const location = useLocation();
 
   const handleValidation = (
     isValid: boolean,
@@ -197,46 +194,17 @@ const App: React.FC = () => {
                   <Route exact path="/colors" component={ColorPalettePreview} />
                 </IonRouterOutlet>
 
-                {isLoggedIn && (
-                  <IonTabBar slot="bottom">
-                    <IonTabButton tab="add-food" href="/add-food" selected={location.pathname === '/add-food'}>
-                      <IonIcon icon={add} color="primary" />
-                      <IonLabel>Add Food</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="home" href="/home" selected={location.pathname === '/home'}>
-                      <IonIcon icon={home} color="primary" />
-                      <IonLabel>Home</IonLabel>
-                    </IonTabButton>
-                    <IonTabButton tab="my-profile" href="/my-profile" selected={location.pathname === '/my-profile'}>
-                      <IonIcon icon={person} color="primary" />
-                      <IonLabel>Profile</IonLabel>
-                    </IonTabButton>
-                  </IonTabBar>
-                )}
+                {isLoggedIn && <BottomTabBar />}
 
                 {isLoggedIn && isCompleated && (
-                  <IonTabBar slot="top">
-                    <IonTabButton tab="Set Goal" onClick={() => setShowGoalWindow(true)}>
-                      <IonButton color="secondary" expand="full">Set Goal</IonButton>
-                    </IonTabButton>
-                    <IonTabButton tab="Set Meal Plan" onClick={() => setShowMealWindow(true)}>
-                      <IonButton color="secondary" expand="full">Set Meal Plan</IonButton>
-                    </IonTabButton>
-                    <IonTabButton tab="Settings" onClick={() => setIsSettingsModalOpen(true)}>
-                      <IonButton fill="clear" className="icon-button">
-                        <IonIcon icon={settings} slot="start" color="secondary" />
-                      </IonButton>
-                    </IonTabButton>
-                  </IonTabBar>
+                  <TopTabBarCompleted
+                    onShowGoal={() => setShowGoalWindow(true)}
+                    onShowMeal={() => setShowMealWindow(true)}
+                    onOpenSettings={() => setIsSettingsModalOpen(true)}
+                  />
                 )}
 
-                {isLoggedIn && !isCompleated && (
-                  <IonTabBar slot="top">
-                    <IonTabButton tab="Complete registration" href="/complete-registaration">
-                      <IonButton color="primary" expand="full">Complete registration</IonButton>
-                    </IonTabButton>
-                  </IonTabBar>
-                )}
+                {isLoggedIn && !isCompleated && <TopTabBarIncomplete />}
               </IonTabs>
 
               <VerificationCodeModal
@@ -250,10 +218,10 @@ const App: React.FC = () => {
               <SetMealPlan isOpen={showMealWindow} onClose={() => setShowMealWindow(false)} />
 
               <SettingsWindow isOpen={isSettingsModalOpen} onDismiss={() => setIsSettingsModalOpen(false)} />
+
+              <IonLoading isOpen={loading} />
             </>
           </IonReactRouter>
-
-          <IonLoading isOpen={loading} />
         </IonApp>
       </UserContext.Provider>
     </GoogleOAuthProvider>
