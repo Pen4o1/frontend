@@ -17,7 +17,7 @@ import {
 } from '@ionic/react';
 import '../../components/styles/login-style.css'; 
 import ResetPasswordWindow from '../../components/ResetPasswordWindow';
-import config from '../../config';
+import config from '../../utils/config';
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');

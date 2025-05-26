@@ -10,7 +10,7 @@ import {
   IonIcon
 } from '@ionic/react';
 import { eye, eyeOff } from 'ionicons/icons';
-import config from '../config';
+import config from '../utils/config';
 
 
 interface PasswordChangeModalProps {

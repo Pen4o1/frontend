@@ -19,7 +19,7 @@ import ShoppingListModal from '../../components/ShoppingListWindow';
 import MealPlanWindow from '../../components/GetMealPlan';
 import PhotoUpload from '../../components/PhotoUpload';
 import '../../components/styles/profile-style.css';
-import config from '../../config';
+import config from '../../utils/config';
 
 const MyProfile: React.FC = () => {
   const [userData, setUserData] = useState({

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IonButton } from '@ionic/react';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-import config from '../config';
+import config from '../utils/config';
 
 interface BarcodeScannerComponentProps {
   setBarcode: (barcode: string) => void;

@@ -16,7 +16,7 @@ import {
   IonAccordionGroup,
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import config from '../config';
+import config from '../utils/config';
 
 type Ingredient = { ingredient: string[] };
 type Nutrition = { calories: string };

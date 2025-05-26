@@ -18,7 +18,7 @@ import {
   IonSelectOption,
 } from '@ionic/react'
 import '../../components/styles/login-style.css'
-import config from '../../config'
+import config from '../../utils/config'
 
 const Profile: React.FC = () => {
   const [birthdate, setBirthdate] = useState('')

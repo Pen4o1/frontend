@@ -5,7 +5,7 @@ import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { UserContext } from '../App';
 import { useHistory } from 'react-router-dom';
 import { getPlatform } from '../utils/platform';
-import config from '../config';
+import config from '../utils/config';
 import '../components/styles/google-login-style.css'
 
 const GoogleLogin: React.FC = () => {
@@ -19,8 +19,8 @@ const GoogleLogin: React.FC = () => {
     switch (platform) {
       case 'ios':
         return 'com.googleusercontent.apps.918043959140-fo9rk75odt49nbmsbdgothp1pqlhh5kv';
-      case 'android':
-        return 'android-client-id'; 
+      //case 'android':
+        // return 'android-client-id'; 
       default:
         return '918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com';
     }

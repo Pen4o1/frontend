@@ -20,7 +20,7 @@ import { UserContext } from '../../App';
 import { useHistory } from 'react-router-dom';
 import '../../components/styles/login-style.css';
 import GoogleLogin from '../../components/GoogleLogin';
-import config from '../../config';
+import config from '../../utils/config';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');

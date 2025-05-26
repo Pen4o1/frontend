@@ -9,7 +9,7 @@ import './styles/home.css';
 import { useHistory } from 'react-router-dom';
 import { IonSpinner } from '@ionic/react';
 import { useIonViewWillEnter } from '@ionic/react';
-import config from '../config';
+import config from '../utils/config';
 
 const ProgressChart: React.FC = () => {
   const [dailyCalories, setDailyCalories] = useState<number>(0);

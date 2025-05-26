@@ -20,7 +20,7 @@ import {
 import { camera } from 'ionicons/icons'; 
 import '../styles/register-style.css';
 import PhotoUpload from '../PhotoUpload';
-import config from '../../config';
+import config from '../../utils/config';
 
 interface SecondStageProps {
   formData: {

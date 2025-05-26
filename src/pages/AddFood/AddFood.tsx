@@ -24,7 +24,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '../../components/styles/add-food-style.css';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-import config from '../../config';
+import config from '../../utils/config';
 
 const AddFood: React.FC = () => {
   const [inputValue, setInputValue] = useState('');

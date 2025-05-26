@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PhotoUpload from "../../components/PhotoUpload";
-import config from "../../config";
+import config from "../../utils/config";
 
 const ImageUp: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);

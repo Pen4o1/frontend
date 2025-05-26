@@ -17,7 +17,7 @@ import {
 } from '@ionic/react';
 import { close } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
-import config from '../config';
+import config from '../utils/config';
 
 interface EditProfileWindowProps {
   isOpen: boolean;

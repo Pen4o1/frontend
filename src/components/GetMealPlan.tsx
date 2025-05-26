@@ -13,7 +13,7 @@ import {
   IonAccordionGroup,
   IonFooter,
 } from '@ionic/react';
-import config from '../config';
+import config from '../utils/config';
 
 interface MealPlanPopupProps {
   isOpen: boolean;

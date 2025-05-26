@@ -14,7 +14,7 @@ import {
   IonInput,
 } from '@ionic/react'
 import { useHistory } from 'react-router-dom';
-import config from '../config';
+import config from '../utils/config';
 
 
 const SetGoalModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({

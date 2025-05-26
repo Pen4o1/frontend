@@ -15,7 +15,7 @@ import {
   IonText
 } from '@ionic/react';
 import '../components/styles/shoppping-list-style.css'
-import config from '../config';
+import config from '../utils/config';
 
 interface ShoppingListModalProps {
   isOpen: boolean;

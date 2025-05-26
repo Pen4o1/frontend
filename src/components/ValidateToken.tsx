@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import config from '../config';
+import config from '../utils/config';
 
 interface ValidateTokenProps {
   onValidation: (isValid: boolean, isComplete: boolean, email: string, emailVerified: boolean, isGoogle: boolean) => void;

@@ -4,7 +4,7 @@ import './styles/home.css';
 import { useHistory } from 'react-router-dom';
 import { IonSpinner } from '@ionic/react';
 import { useIonViewWillEnter } from '@ionic/react';
-import config from '../config';
+import config from '../utils/config';
 
 const COLORS = ['#FFBB28', '#0088FE', '#00C49F'];
 
