@@ -21,11 +21,11 @@ import TestCal from './pages/AddFood/Test-add-foods';
 import SetMealPlan from './components/MealPlan';
 import TestBackend from './pages/FoodSearch';
 import TestRecipes from './pages/test_for_recipes';
+import VerificationCodeModal from './components/VerificationCodeWindow';
 import ValidateToken from './components/ValidateToken';
 import SettingsWindow from './components/SettingsWindow';
 import UploadImage from './pages/MyProfile/Upload';
 import ColorPalettePreview from './pages/color-test/ColorPalettePreview';
-import EmailVerificationHandler from './components/EmailVerification';
 
 import BottomTabBar from './components/TabBars/BottomTabBar';
 import TopTabBarCompleted from './components/TabBars/TopTabBarCompleted';
@@ -89,8 +89,56 @@ const App: React.FC = () => {
   };
 
   const handleVerificationRequired = async (token: string, email: string) => {
-    setUserEmail(email);
-    setVerificationModalOpen(true);
+    try {
+      setLoading(true);
+      const response = await fetch(`${config.BASE_URL}/api/send/verification/code`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to send verification email');
+      }
+    } catch (error) {
+      console.error('Error sending verification email', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async (code: string) => {
+    const token = localStorage.getItem('jwt_token');
+    if (!token || !code || !userEmail) {
+      console.error('Invalid input');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${config.BASE_URL}/api/verify/email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email: userEmail, verification_code: code }),
+      });
+
+      if (response.ok) {
+        setVerificationModalOpen(false);
+        alert('Email successfully verified!');
+      } else {
+        alert('Verification failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error verifying email code', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -159,16 +207,18 @@ const App: React.FC = () => {
                 {isLoggedIn && !isCompleated && <TopTabBarIncomplete />}
               </IonTabs>
 
-              <EmailVerificationHandler
-                userEmail={userEmail}
+              <VerificationCodeModal
                 isOpen={verificationModalOpen}
-                onClose={() => setVerificationModalOpen(false)}
-                onLoadingChange={setLoading}
+                onDismiss={() => setVerificationModalOpen(false)}
+                onVerify={handleVerifyCode}
               />
 
               <SetGoalWindow isOpen={showGoalWindow} onClose={() => setShowGoalWindow(false)} />
+
               <SetMealPlan isOpen={showMealWindow} onClose={() => setShowMealWindow(false)} />
+
               <SettingsWindow isOpen={isSettingsModalOpen} onDismiss={() => setIsSettingsModalOpen(false)} />
+
               <IonLoading isOpen={loading} />
             </>
           </IonReactRouter>
