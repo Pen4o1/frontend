@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import {
+  IonLoading
+} from '@ionic/react'; // ✅ Import IonLoading from Ionic
 import config from '../utils/config';
 
 interface ValidateTokenProps {
-  onValidation: (isValid: boolean, isComplete: boolean, email: string, emailVerified: boolean, isGoogle: boolean) => void;
+  onValidation: (
+    isValid: boolean,
+    isComplete: boolean,
+    email: string,
+    emailVerified: boolean,
+    isGoogle: boolean
+  ) => void;
   onVerificationRequired: (token: string, email: string) => void;
 }
 
@@ -26,7 +35,7 @@ const ValidateToken: React.FC<ValidateTokenProps> = ({ onValidation, onVerificat
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-      });
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -52,9 +61,15 @@ const ValidateToken: React.FC<ValidateTokenProps> = ({ onValidation, onVerificat
     };
 
     validateToken();
-  }, [location.pathname]); // Add location.pathname as dependency
+  }, [location.pathname]);
 
-  return null;
+  return (
+    <IonLoading
+      isOpen={loading}
+      spinner="crescent"
+      translucent
+    />
+  );
 };
 
 export default ValidateToken;
