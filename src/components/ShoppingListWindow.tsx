@@ -89,28 +89,6 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
     }
   };
 
-  const clearBoughtItems = async () => {
-    const token = localStorage.getItem('jwt_token');
-    try {
-      const response = await fetch(`${config.BASE_URL}/api/clear/bought/items`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to clear bought items.');
-      }
-
-      // Refresh the shopping list after clearing bought items
-      fetchShoppingList();
-    } catch (error) {
-      console.error('Error clearing bought items:', error);
-    }
-  };
-
   return (
     <IonModal isOpen={isOpen} onDidDismiss={onDismiss}>
       <IonHeader>
