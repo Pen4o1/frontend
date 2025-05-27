@@ -106,6 +106,7 @@ const MyProfile: React.FC = () => {
   
       if (uploadResponse.ok) {
         console.log('Upload success:', result);
+        console.log("Updated avatar URL:", result.profile_picture_url);
         setUserData({ ...userData, avatar: result.profile_picture_url });
         setIsUploadModalOpen(false);
       } else {
@@ -132,7 +133,7 @@ const MyProfile: React.FC = () => {
           <div className="profile-header">
             <div className="avatar-container">
               <IonAvatar className="profile-avatar">
-                <img alt="User's avatar" src={userData.avatar} />
+                <IonImg  alt="User's avatar" src={userData.avatar} />
               </IonAvatar>
               <div className="upload-icon" onClick={handleUploadClick}>
                 <IonIcon icon={addCircle} color="primary"/>
