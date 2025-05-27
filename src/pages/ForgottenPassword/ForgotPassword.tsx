@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { 
   IonContent, 
   IonHeader, 
@@ -24,6 +25,8 @@ const ForgotPassword: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const history = useHistory();
+
 
   const handleSendCode = async () => {
     if (!email) {
@@ -91,6 +94,7 @@ const ForgotPassword: React.FC = () => {
         setShowVerificationModal(false);
         setEmail('');
         setErrorMessage('');
+        history.push('/login');
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Password reset failed');

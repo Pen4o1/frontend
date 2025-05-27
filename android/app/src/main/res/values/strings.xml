@@ -4,4 +4,5 @@
     <string name="title_activity_main">Macro Genie</string>
     <string name="package_name">com.macro.genie</string>
     <string name="custom_url_scheme">com.macro.genie</string>
+    <string name="server_client_id">918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com</string>
 </resources>

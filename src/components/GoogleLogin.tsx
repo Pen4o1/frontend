@@ -20,7 +20,7 @@ const GoogleLogin: React.FC = () => {
       case 'ios':
         return 'com.googleusercontent.apps.918043959140-fo9rk75odt49nbmsbdgothp1pqlhh5kv';
       case 'android':
-         return '918043959140-jmar519umgq07031kodge03dg0doc5ea.apps.googleusercontent.com'; 
+        return '918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com'; 
       default:
         return '918043959140-c0c6cur70js4ubt6hsb4seik2l90jf26.apps.googleusercontent.com';
     }
