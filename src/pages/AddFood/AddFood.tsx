@@ -23,18 +23,19 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '../../components/styles/add-food-style.css';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import config from '../../utils/config';
+
+import BarcodeScannerComponent from '../../components/BarcodeScanner';
 
 const AddFood: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
-  /*to make an interface for this*/const [fetchedItems, setFetchedItems] = useState<any[]>([]);
-  /*to make an interface for this*/const [selectedItems, setSelectedItems] = useState<any[]>([]);
+  const [fetchedItems, setFetchedItems] = useState<any[]>([]);
+  const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [barcode, setBarcode] = useState<string | null>(null);
-  /*to make an interface for this*/const [foodDetails, setFoodDetails] = useState<any | null>(null);
+  const [foodDetails, setFoodDetails] = useState<any | null>(null);
   const [showBarcodeModal, setShowBarcodeModal] = useState(false);
 
   const fetchItems = async () => {
@@ -47,10 +48,9 @@ const AddFood: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`${config.BASE_URL}/api/foods/search?query=${encodeURIComponent(inputValue)}`, { 
-            method: 'GET' 
-          }
-        );
+      const response = await fetch(`${config.BASE_URL}/api/foods/search?query=${encodeURIComponent(inputValue)}`, {
+        method: 'GET',
+      });
 
       if (!response.ok) {
         throw new Error('Failed to fetch items.');
@@ -61,7 +61,7 @@ const AddFood: React.FC = () => {
       if (foods.length === 0) {
         setErrorMessage('No items found for your query.');
       } else {
-      /*to make an interface for this*/  const formattedItems = foods.map((food: any) => ({
+        const formattedItems = foods.map((food: any) => ({
           id: food.food_id,
           name: food.food_name,
           calories: parseInt(food.servings?.serving[0]?.calories, 10) || 0,
@@ -84,43 +84,36 @@ const AddFood: React.FC = () => {
 
   const handleServingChange = (itemId: string, multiplier: number) => {
     setFetchedItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, servingMultiplier: multiplier } : item
-      )
+      prevItems.map((item) => (item.id === itemId ? { ...item, servingMultiplier: multiplier } : item))
     );
 
     setSelectedItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, servingMultiplier: multiplier } : item
-      )
+      prevItems.map((item) => (item.id === itemId ? { ...item, servingMultiplier: multiplier } : item))
     );
   };
 
-  /*to make an interface for this*/const toggleSelection = (item: any) => {
+  const toggleSelection = (item: any) => {
     const isSelected = selectedItems.some((selected) => selected.id === item.id);
     if (isSelected) {
-      setSelectedItems((prev) =>
-        prev.filter((selected) => selected.id !== item.id)
-      );
+      setSelectedItems((prev) => prev.filter((selected) => selected.id !== item.id));
     } else {
       const currentItem = fetchedItems.find((fetched) => fetched.id === item.id);
-      setSelectedItems((prev) => [...prev, { ...currentItem }]);
+      if (currentItem) setSelectedItems((prev) => [...prev, { ...currentItem }]);
     }
   };
 
-  /*to make an interface for this*/const saveFoodToDailyCalories = async (payload: any) => {
+  const saveFoodToDailyCalories = async (payload: any) => {
     try {
       const token = localStorage.getItem('jwt_token');
 
       const response = await fetch(`${config.BASE_URL}/api/save/daily/macros`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
         throw new Error('Failed to save food.');
@@ -169,67 +162,36 @@ const AddFood: React.FC = () => {
     saveFoodToDailyCalories(payload);
   };
 
-  const scanBarcode = async () => {
-    try {
-      const data = await BarcodeScanner.scan();
-      if (data.cancelled) {
-        console.log('Barcode scan was cancelled');
-      } else {
-        setBarcode(data.text);
-        const payload = { barcode: data.text };
-
-        const response = await fetch(`${config.BASE_URL}/api/foods/barcode`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-
-        if (response.ok) {
-          const item = await response.json();
-          console.log('Fetched item from barcode:', item);
-          setFoodDetails(item.food.food);
-          setShowBarcodeModal(true);
-        }
-      }
-    } catch (error) {
-      console.error('Error scanning barcode:', error);
-    }
-  };
-
   const manulaInputBarcode = async () => {
     if (!barcode || barcode.trim() === '') {
       setErrorMessage('Please enter a valid barcode.');
       return;
     }
-  
+
     setLoading(true);
     setErrorMessage(null);
-    
+
     const payload = {
       barcode,
-    }
+    };
 
     try {
       const response = await fetch(`${config.BASE_URL}/api/foods/barcode`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-  
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch food details.');
       }
-  
+
       const item = await response.json();
       console.log('Fetched item from barcode:', item);
-  
+
       if (!item.food) {
         setErrorMessage('No food found for the provided barcode.');
       } else {
@@ -243,8 +205,6 @@ const AddFood: React.FC = () => {
       setLoading(false);
     }
   };
-  
-
 
   return (
     <IonPage>
@@ -271,9 +231,12 @@ const AddFood: React.FC = () => {
 
                 <SwiperSlide>
                   <div className="swiper-button">
-                    <IonButton expand="block" color="primary" onClick={scanBarcode}>
-                      Scan Barcode
-                    </IonButton>
+                    {/* Use the new BarcodeScannerComponent here */}
+                    <BarcodeScannerComponent
+                      setBarcode={setBarcode}
+                      setFoodDetails={setFoodDetails}
+                      setShowBarcodeModal={setShowBarcodeModal}
+                    />
                     {barcode && <IonText>Scanned Barcode: {barcode}</IonText>}
                   </div>
                 </SwiperSlide>
@@ -328,9 +291,7 @@ const AddFood: React.FC = () => {
                           </IonLabel>
                           <IonSelect
                             placeholder="Servings"
-                            onIonChange={(e) =>
-                              handleServingChange(item.id, e.detail.value)
-                            }
+                            onIonChange={(e) => handleServingChange(item.id, e.detail.value)}
                           >
                             <IonSelectOption value={0.25}>1/4</IonSelectOption>
                             <IonSelectOption value={0.5}>1/2</IonSelectOption>
@@ -340,9 +301,7 @@ const AddFood: React.FC = () => {
                           </IonSelect>
                           <IonCheckbox
                             slot="start"
-                            checked={selectedItems.some(
-                              (selected) => selected.id === item.id
-                            )}
+                            checked={selectedItems.some((selected) => selected.id === item.id)}
                             onIonChange={() => toggleSelection(item)}
                           />
                         </IonItem>
@@ -353,8 +312,11 @@ const AddFood: React.FC = () => {
               </div>
 
               <div className="button-container">
-                <IonButton expand="block" color="success" className="fixed-button" onClick={handleSaveSelectedItems}>
-                  Save Selected Items
+                <IonButton expand="block" color="success" className="save-btn" onClick={handleSaveSelectedItems}>
+                  Save Selected Foods
+                </IonButton>
+                <IonButton expand="block" color="medium" onClick={() => setShowModal(false)}>
+                  Cancel
                 </IonButton>
               </div>
             </div>
@@ -368,53 +330,37 @@ const AddFood: React.FC = () => {
             </IonToolbar>
           </IonHeader>
           <IonContent>
-            <div className="food-details-container">
-              <div className="food-details">
-                {foodDetails && foodDetails.servings && foodDetails.servings.serving && foodDetails.servings.serving.length > 0 ? (
-                  <IonGrid>
-                    <IonRow>
-                      <IonCol>
-                        <h2>{foodDetails.food_name}</h2>
-                        <p><strong>Serving:</strong> {foodDetails.servings.serving[0].serving_description}</p>
-                        <p><strong>Brand:</strong> {foodDetails.brand_name}</p>
-                        <p><strong>Calories:</strong> {foodDetails.servings.serving[0].calories}</p>
-                        <p><strong>Carbs:</strong> {foodDetails.servings.serving[0].carbohydrate}</p>
-                        <p><strong>Protein:</strong> {foodDetails.servings.serving[0].protein}</p>
-                        <p><strong>Fat:</strong> {foodDetails.servings.serving[0].fat}</p>
-                        
-                        <IonItem>
-                          <IonLabel>Servings</IonLabel>
-                          <IonSelect
-                            placeholder="Select Serving"
-                            onIonChange={(e) => handleServingChange(foodDetails.id, e.detail.value)}
-                          >
-                            <IonSelectOption value={0.25}>1/4</IonSelectOption>
-                            <IonSelectOption value={0.5}>1/2</IonSelectOption>
-                            <IonSelectOption value={1}>1</IonSelectOption>
-                            <IonSelectOption value={2}>2</IonSelectOption>
-                            <IonSelectOption value={3}>3</IonSelectOption>
-                          </IonSelect>
-                        </IonItem>
-                      </IonCol>
-                    </IonRow>
-                  </IonGrid>
-                ) : (
-                  <IonText color="danger">
-                    <p>Food details are unavailable. Please try again later.</p>
-                  </IonText>
-                )}
-              </div>
-
-              <div className="button-container">
-                <IonButton expand="block" color="success" className="fixed-button" onClick={handleSaveBarcodeFood}>
+            {foodDetails ? (
+              <>
+                <IonItem>
+                  <IonLabel>
+                    <h2>{foodDetails.food_name}</h2>
+                    <p>
+                      Calories: {foodDetails.servings.serving[0].calories}
+                    </p>
+                    <p>
+                      Carbs: {foodDetails.servings.serving[0].carbohydrate}
+                    </p>
+                    <p>
+                      Protein: {foodDetails.servings.serving[0].protein}
+                    </p>
+                    <p>
+                      Fat: {foodDetails.servings.serving[0].fat}
+                    </p>
+                  </IonLabel>
+                </IonItem>
+                <IonButton expand="block" color="success" onClick={handleSaveBarcodeFood}>
                   Save Food
                 </IonButton>
-              </div>
-            </div>
+                <IonButton expand="block" color="medium" onClick={() => setShowBarcodeModal(false)}>
+                  Cancel
+                </IonButton>
+              </>
+            ) : (
+              <IonText>No food details available.</IonText>
+            )}
           </IonContent>
         </IonModal>
-
-
       </IonContent>
     </IonPage>
   );

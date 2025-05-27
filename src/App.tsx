@@ -34,6 +34,7 @@ import TopTabBarIncomplete from './components/TabBars/TopTabBarIncomplete';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { setupIonicReact } from '@ionic/react';
 import config from './utils/config';
+import BarcodeScannerInstaller from './utils/barcodeInstaller';
 import './components/styles/app-style.css';
 
 import '@ionic/react/css/core.css';
@@ -145,6 +146,7 @@ const App: React.FC = () => {
     <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
       <UserContext.Provider value={{ isLoggedIn, setIsLoggedIn, isCompleated, setIsCompleated }}>
         <IonApp className="app-wrapper">
+          <BarcodeScannerInstaller />
           <IonReactRouter>
             <>
               <ValidateToken

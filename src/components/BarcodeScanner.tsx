@@ -1,46 +1,60 @@
 import React, { useState } from 'react';
 import { IonButton } from '@ionic/react';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import config from '../utils/config';
 
 interface BarcodeScannerComponentProps {
   setBarcode: (barcode: string) => void;
-  /* to make an interface for this*/setFoodDetails: (foodDetails: any) => void;
+  setFoodDetails: (foodDetails: any) => void;
   setShowBarcodeModal: (show: boolean) => void;
 }
 
-const BarcodeScannerComponent: React.FC<BarcodeScannerComponentProps> = ({ setBarcode, setFoodDetails, setShowBarcodeModal }) => {
+const BarcodeScannerComponent: React.FC<BarcodeScannerComponentProps> = ({
+  setBarcode,
+  setFoodDetails,
+  setShowBarcodeModal,
+}) => {
   const [loading, setLoading] = useState(false);
 
   const scanBarcode = async () => {
+    setLoading(true);
     try {
-      const data = await BarcodeScanner.scan();
-      if (data.cancelled) {
-        console.log('Barcode scan was cancelled');
+      const result = await BarcodeScanner.scan();
+
+      if (!result.barcodes || result.barcodes.length === 0) {
+        console.warn('No barcode detected');
+        return;
+      }
+
+      const scannedValue = result.barcodes[0].rawValue;
+      if (!scannedValue) {
+        console.warn('No rawValue found in barcode');
+        return;
+      }
+
+      setBarcode(scannedValue);
+      console.log('Scanned Barcode:', scannedValue);
+
+      const response = await fetch(`${config.BASE_URL}/api/foods/barcode`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ barcode: scannedValue }),
+      });
+
+      if (response.ok) {
+        const item = await response.json();
+        console.log('Fetched item from barcode:', item);
+        setFoodDetails(item.food.food);
+        setShowBarcodeModal(true);
       } else {
-        setBarcode(data.text);
-        console.log('Scanned Barcode:', data.text);
-
-        const payload = { barcode: data.text };
-
-        const response = await fetch(`${config.BASE_URL}/api/foods/barcode`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-
-        if (response.ok) {
-          const item = await response.json();
-          console.log('Fetched item from barcode:', item);
-          setFoodDetails(item.food.food);
-          setShowBarcodeModal(true);
-        }
+        console.error('Failed to fetch food details');
       }
     } catch (error) {
-      console.error('Error scanning barcode:', error);
+      console.error('Barcode scanning error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 

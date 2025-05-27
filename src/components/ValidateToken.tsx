@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import config from '../utils/config';
 
@@ -8,6 +8,7 @@ interface ValidateTokenProps {
 }
 
 const ValidateToken: React.FC<ValidateTokenProps> = ({ onValidation, onVerificationRequired }) => {
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
@@ -45,6 +46,8 @@ const ValidateToken: React.FC<ValidateTokenProps> = ({ onValidation, onVerificat
       } catch (error) {
         console.error('Error validating token', error);
         onValidation(false, false, '', false, false);
+      } finally {
+        setLoading(false);
       }
     };
 

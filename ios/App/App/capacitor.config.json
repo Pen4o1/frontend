@@ -15,6 +15,7 @@
 		}
 	},
 	"packageClassList": [
+		"BarcodeScannerPlugin",
 		"AppPlugin",
 		"CAPCameraPlugin",
 		"HapticsPlugin",

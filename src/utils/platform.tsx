@@ -1,11 +1,7 @@
-export const getPlatform = (): 'web' | 'ios'| 'android'=> {
-  const userAgent = navigator.userAgent || navigator.vendor;
+import { Capacitor } from '@capacitor/core';
 
-  if (/iPad|iPhone|iPod/.test(userAgent)) {
-    return 'ios';
-  }
-  if (/Android/.test(userAgent)) {
-    return 'android';
-  }
+export const getPlatform = (): 'web' | 'ios' | 'android' => {
+  if (Capacitor.getPlatform() === 'android') return 'android';
+  if (Capacitor.getPlatform() === 'ios') return 'ios';
   return 'web';
 };
