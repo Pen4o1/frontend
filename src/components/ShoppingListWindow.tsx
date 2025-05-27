@@ -83,11 +83,7 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
         throw new Error('Failed to update item status.');
       }
 
-      setShoppingList(prevList =>
-        prevList
-          .map(item => (item.id === itemId ? { ...item, bought: !currentStatus } : item))
-          .sort((a, b) => Number(a.bought) - Number(b.bought))
-      );
+      fetchShoppingList();
     } catch (error) {
       console.error('Error updating item status:', error);
     }
@@ -108,7 +104,8 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
         throw new Error('Failed to clear bought items.');
       }
 
-      setShoppingList(prevList => prevList.filter(item => !item.bought));
+      // Refresh the shopping list after clearing bought items
+      fetchShoppingList();
     } catch (error) {
       console.error('Error clearing bought items:', error);
     }
@@ -156,15 +153,7 @@ const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, onDismiss
 
       <IonFooter>
         <IonToolbar>
-          <div className="ion-padding" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <IonButton
-              expand="block"
-              color="danger"
-              onClick={clearBoughtItems}
-              disabled={shoppingList.filter(item => item.bought).length === 0}
-            >
-              Clear Bought Items
-            </IonButton>
+          <div className="ion-padding close-button">
             <IonButton expand="block" onClick={onDismiss}>
               Close
             </IonButton>

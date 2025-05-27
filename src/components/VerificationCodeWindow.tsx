@@ -64,8 +64,8 @@ const VerificationCodeModal: React.FC<VerificationCodeModalProps> = ({
               value={digit}
               type="number"
               maxlength={1}
-              /*to make an interface for this*/onIonInput={(e: any) => handleInputChange(e.target.value, index)}
-              /*to make an interface for this*/onKeyDown={(e: any) => {
+              onIonInput={(e: any) => handleInputChange(e.target.value, index)}
+              onKeyDown={(e: any) => {
                 if (e.key === 'Backspace') {
                   handleBackspace(e.target.value, index);
                 }
